@@ -8,11 +8,13 @@ Not claiming expertise here. This is a learning log, not a portfolio yet.
 
 ## Where I am right now
 
-- Learning Git, SQL, and Linux basics properly for the first time
-- Refreshing Java fundamentals (already know some, filling gaps)
-- Starting Spring Boot from the basics — no projects finished yet
-- Practicing DSA daily, starting from easy problems
-- Aptitude/logical reasoning — also starting from zero here
+### Phase 1 — Foundation (M1–M3)
+
+#### Skill Project 1 — [In Progress]
+- Student Grade Tracker (Java OOP + Collections) .
+
+
+A console app. Add students, assign marks per subject, calculate averages, rank them, search by name. Forces you to use classes, ArrayLists, Maps, sorting, and basic file I/O to save data. No DB yet — just .txt or .json file persistence. Done when you can run it fresh, add 10 students, and the ranking is correct after a restart.
 
 ---
 
