@@ -1,63 +1,39 @@
 # Vansh Kalawatia
 
-Backend developer in training — Java & Spring Boot, with a deliberate focus on secure, production-minded API design rather than tutorial-level CRUD work.
+3rd-year Computer Science student. Just starting out with backend development — Java and Spring Boot.
 
-3rd-year Computer Science (B.Tech) student. Building toward a backend engineering role, one real project at a time.
-
----
-
-## Currently
-
-- Learning: Spring Security, JWT/OAuth2, and Spring Data JPA in depth
-- Practicing: Data Structures & Algorithms daily (Java)
-- Building: a role-based backend system with authentication and rate limiting
-- Focused on: security-first backend design — OWASP Top 10, secure auth patterns, not just CRUD endpoints
+Not claiming expertise here. This is a learning log, not a portfolio yet.
 
 ---
 
-## Tech Stack
+## Where I am right now
 
-**Languages:** Java, SQL, Go (basic)
-**Backend:** Spring Boot, Spring Security, Spring Data JPA, Hibernate
-**Databases:** PostgreSQL
-**Tools:** Git, Docker, Linux/Bash
-**Testing:** JUnit, Mockito
-**Messaging (learning):** Kafka, RabbitMQ
-**Security focus:** JWT, OAuth2, OWASP Top 10, rate limiting, secrets management
+- Learning Git, SQL, and Linux basics properly for the first time
+- Refreshing Java fundamentals (already know some, filling gaps)
+- Starting Spring Boot from the basics — no projects finished yet
+- Practicing DSA daily, starting from easy problems
+- Aptitude/logical reasoning — also starting from zero here
 
 ---
 
-## Featured Projects
+## Tech I'm learning (not "know" yet, still learning)
 
-> Projects are being built and pushed incrementally as part of a structured backend learning roadmap — each one adds a layer of production-readiness over the last.
-
-| Project | Focus | Status |
-|---|---|---|
-| Task/Notes REST API | Core Spring Boot, JPA persistence, Docker deployment | In progress |
-| Role-Based Access System | Spring Security, RBAC, JWT auth | In progress |
-| Order Processing Service | Kafka/RabbitMQ async events, rate limiting, audit logging | Planned |
-| Secure File-Sharing Platform (capstone) | Full OWASP mitigations, threat model, monitoring | Planned |
-
-*(Links added as each project is deployed.)*
+Java, SQL, Git, Linux basics, Spring Boot (just starting)
 
 ---
 
-## Certifications
+## Certifications completed so far
 
-- NPTEL — Programming in Java (IIT Kharagpur) — Elite
+- NPTEL — Programming in Java (IIT Kharagpur)
 - NPTEL — Introduction to Database Systems (IIT Madras)
 - NPTEL — Foundations of Cryptography (IIIT Bangalore)
 
----
-
-## Currently learning DSA in
-
-Java — working through arrays, trees, graphs, and dynamic programming with a focus on interview-relevant patterns.
+(Completed as part of coursework — still refreshing the material properly, not treating these as mastery.)
 
 ---
 
-## Open to
+## What this repo/profile is for
 
-Backend developer internships and entry-level roles (Java / Spring Boot). Always happy to connect with other backend or security-focused developers.
+Committing small exercises and progress here as I go through Git, SQL, and Java basics. No polished projects yet — that comes later as the fundamentals solidify.
 
-**Connect:** [LinkedIn] · [Email]
+**Connect:** [LinkedIn] https://www.linkedin.com/in/vanshkalawatia · [Email] vanshkalawatia2@gmail.com
