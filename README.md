@@ -1,6 +1,6 @@
 # Vansh Kalawatia
 
-3rd-year Computer Science student. Just starting out with backend development — Java and Spring Boot.
+3rd-year Computer Science student. Just starting out with Security  focused back-end development — Java.
 
 Not claiming expertise here. This is a learning log, not a portfolio yet.
 
@@ -38,4 +38,4 @@ Java, Git ==> (just starting)
 
 Committing small exercises and progress here as I go through Git, SQL, and Java basics. No polished projects yet — that comes later as the fundamentals solidify.
 
-**Connect:** [LinkedIn] https://www.linkedin.com/in/vanshkalawatia · [Email] vanshkalawatia2@gmail.com
+**Connect:** [LinkedIn] https://www.linkedin.com/in/vanshkalawatia · [Email] vanshkalawatia2@gmail.com  · [Twitter / X ] https://x.com/vansh0x00 · [ Discord Server ] 
