@@ -8,19 +8,19 @@ Not claiming expertise here. This is a learning log, not a portfolio yet.
 
 ## Where I am right now
 
-### Phase 1 — Foundation (M1–M3)
-
-#### Skill Project 1 — [In Progress]
-- Student Grade Tracker (Java OOP + Collections) .
 
 
-A console app. Add students, assign marks per subject, calculate averages, rank them, search by name. Forces you to use classes, ArrayLists, Maps, sorting, and basic file I/O to save data. No DB yet — just .txt or .json file persistence. Done when you can run it fresh, add 10 students, and the ranking is correct after a restart.
+### Project 1 — Port Scanner [In Progress] (Over Engineering this one)
 
+#### Phase 1 — Port Scanner 
+- An Console application which scan an port of an target ( ip / url )  provided from port pool ( 1 - 100 ) with socket programming in an traditional sequential way.
+
+- Much more in next phases so stay tuned.
 ---
 
 ## Tech I'm learning (not "know" yet, still learning)
 
-Java, SQL, Git, Linux basics, Spring Boot (just starting)
+Java, Git ==> (just starting)
 
 ---
 
