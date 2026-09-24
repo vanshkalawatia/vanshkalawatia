@@ -1,41 +1,27 @@
-# Vansh Kalawatia
+# Vansh Kalawatia <vansh0x00>
 
-3rd-year Computer Science student. Just starting out with Security  focused back-end development — Java.
+3rd-year CSE student. Learning Python backend by building small things.
 
-Not claiming expertise here. This is a learning log, not a portfolio yet.
+Currently: FastAPI, PostgreSQL, and writing secure code by default.
 
----
-
-## Where I am right now
-
-
-
-### Project 1 — Port Scanner [In Progress] (Over Engineering this one)
-
-#### Phase 1 — Port Scanner 
-- An Console application which scan an port of an target ( ip / url )  provided from port pool ( 1 - 100 ) with socket programming in an traditional sequential way.
-
-- Much more in next phases so stay tuned.
----
-
-## Tech I'm learning (not "know" yet, still learning)
-
-Java, Git ==> (just starting)
+Started 25 Sept 2026
 
 ---
 
-## Certifications completed so far
+**What I'm working on:**
 
-- NPTEL — Programming in Java (IIT Kharagpur)
-- NPTEL — Introduction to Database Systems (IIT Madras)
-- NPTEL — Foundations of Cryptography (IIIT Bangalore)
+- Building tiny projects, one commit at a time
+- Learning backend with FastAPI and SQL
+- Writing code, breaking it, fixing it
 
-(Completed as part of coursework — still refreshing the material properly, not treating these as mastery.)
+**What I'm not:**
+
+- An expert
+- A 10x developer
+- Done learning
 
 ---
 
-## What this repo/profile is for
+**Pinned repos** are my actual work. Read the READMEs. Run the code. If something is broken, open an issue.
 
-Committing small exercises and progress here as I go through Git, SQL, and Java basics. No polished projects yet — that comes later as the fundamentals solidify.
-
-**Connect:** [LinkedIn] https://www.linkedin.com/in/vanshkalawatia · [Email] vanshkalawatia2@gmail.com  · [Twitter / X ] https://x.com/vansh0x00 · [ Discord Server ] 
+**Find me:** [LinkedIn](https://www.linkedin.com/in/vanshkalawatia/) · [X](https://x.com/vansh0x00) · [Leetcode](https://leetcode.com/u/vanshkalawatia/)
