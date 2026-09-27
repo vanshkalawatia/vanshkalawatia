@@ -30,13 +30,13 @@
 > a 10x developer
 > done learning
 ```
-
+<!--
 ---
 
 ### 📌 A NOTE ON THIS PROFILE
 Pinned repos are my actual work. Read the READMEs. Run the code.
 If something is broken, open an issue.
-
+-->
 ---
 
 ### 🔗 CONNECT
