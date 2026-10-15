@@ -1,4 +1,4 @@
-# ⚡ Vansh Kalawatia // vansh0x00 ⚡
+# ⚡ Vansh Kalawatia // vansh0x00 ⚡ 
 
 <p align="center">
   <img src="https://skillicons.dev/icons?i=python,fastapi,postgres,git,linux" />
