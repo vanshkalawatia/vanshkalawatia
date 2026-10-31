@@ -1,44 +1,44 @@
+<div align="center">
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/dark/header.svg"/>
+  <img src="assets/header.svg" alt="Vansh Kalawatia — software engineering, Python backend and DSA"/>
+</picture>
+
+<a href="https://github.com/vanshkalawatia"><img src="https://img.shields.io/badge/GITHUB-vanshkalawatia-161b22?style=flat-square&logo=github&logoColor=white" alt="GitHub"/></a>
+<a href="mailto:vanshkalawatia2@gmail.com"><img src="https://img.shields.io/badge/EMAIL-CONTACT-161b22?style=flat-square&logo=gmail&logoColor=white" alt="Email"/></a>
+<a href="https://github.com/vanshkalawatia?tab=repositories"><img src="https://img.shields.io/badge/REPOSITORIES-EXPLORE-161b22?style=flat-square&logo=github&logoColor=white" alt="Repositories"/></a>
+
+</div>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/dark/01-whoami.svg"/>
+  <img src="assets/01-whoami.svg" alt="01 — whoami"/>
+</picture>
 
 <div align="center">
 
 <table>
 <tr>
-<td width="43%" align="center" valign="middle">
+<td width="32%" align="center" valign="middle">
 
-<img src="assets/ascii-avatar.png" width="100%" alt="Vansh's original pixelated anime avatar" />
+<img src="assets/avatar.png" width="220" alt="Vansh's pixelated anime avatar"/>
 
 </td>
-<td width="57%" valign="middle">
+<td width="68%" valign="middle">
 
-# `Vansh Kalawatia`
+### VANSH KALAWATIA
 
-### `DEVELOPER / LEARNER / BUILDER`
+**B.Tech Computer Science student · Aspiring Software Engineer**
 
-**Code · Learn · Build · Repeat**
+I'm focused on building strong engineering fundamentals through independent coding, problem solving and practical backend projects.
 
-📍 Jaipur, India
-
-🎓 B.Tech (CSE) | 3rd Year
-
-💻 Aspiring Software Engineer
-
-🐍 Python Backend | DSA | Linux
-
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github)](https://github.com/vanshkalawatia)
-
-[![Email](https://img.shields.io/badge/Email-EA4335?style=flat-square&logo=gmail&logoColor=white)](mailto:YOUR_EMAIL@example.com)
-
-### `> system`
-
-```text
-OS       : Fedora Linux
-Focus    : Python Backend
-Language : Python
-DSA      : Learning
-Editor   : VS Code
-Workflow : Git + GitHub
-Shell    : Terminal
-```
+- **Based in:** Jaipur, India
+- **Primary language:** Python
+- **Backend path:** FastAPI · REST APIs · PostgreSQL
+- **Core practice:** Data Structures & Algorithms
+- **Environment:** Fedora Linux · Git · GitHub
+- **Next milestone:** Summer 2027 software engineering internship
 
 </td>
 </tr>
@@ -46,89 +46,69 @@ Shell    : Terminal
 
 </div>
 
----
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/dark/02-projects.svg"/>
+  <img src="assets/02-projects.svg" alt="02 — projects"/>
+</picture>
 
-## `> tech_stack`
+I want my repositories to show how I think, learn and engineer—not just that I followed a tutorial. I'll feature projects here as they become ready.
+
+| Project | What it demonstrates | Status |
+|:--|:--|:--:|
+| Projects in progress | Python, backend development and problem solving | Building |
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/dark/03-telemetry.svg"/>
+  <img src="assets/03-telemetry.svg" alt="03 — telemetry"/>
+</picture>
 
 <div align="center">
 
-| Programming | Backend | Tools |
-|:---:|:---:|:---:|
-| ![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white) | ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white) | ![Git](https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white) |
-| ![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=cplusplus&logoColor=white) | ![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white) | ![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black) |
-| ![SQL](https://img.shields.io/badge/SQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white) | ![REST API](https://img.shields.io/badge/REST_API-7952B3?style=for-the-badge) | ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white) |
-| | | ![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white) |
+<img width="49%" src="https://github-stats-extended.vercel.app/api?username=vanshkalawatia&show_icons=true&hide_border=true&theme=github_dark&rank_icon=github" alt="GitHub statistics"/>
+<img width="49%" src="https://github-stats-extended.vercel.app/api/top-langs/?username=vanshkalawatia&layout=compact&hide_border=true&theme=github_dark" alt="Top languages"/>
+
+<img width="95%" src="https://streak-stats.demolab.com?user=vanshkalawatia&theme=github-dark-blue&hide_border=true" alt="Contribution streak"/>
 
 </div>
 
----
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/dark/04-route.svg"/>
+  <img src="assets/04-route.svg" alt="04 — the route"/>
+</picture>
 
-<table>
-<tr>
-<td width="56%" valign="top">
+| Phase | Focus | Direction |
+|:--|:--|:--|
+| Current | Python, DSA and CS fundamentals | Build strong foundations |
+| Next | FastAPI, SQL, PostgreSQL and testing | Ship backend projects |
+| 2027 target | Internship preparation and open source | Gain engineering experience |
+| Long term | Software engineering career | Grow into an independent engineer |
 
-## `> current_goals`
-
-- ➜ Master DSA and core Computer Science
-- ➜ Become proficient in Python backend development
-- ➜ Build real-world projects using FastAPI
-- ➜ Get a software engineering internship in Summer 2027
-- ➜ Learn system design and networking
-- ➜ Contribute to open source
-- ➜ Become a strong software engineer
-- ➜ Achieve financial independence
-- ➜ Work internationally
-
-### `> mindset`
-
-> "A better version of myself, not just a better coder."
-
-</td>
-
-<td width="44%" valign="top">
-
-## `> currently_learning`
-
-- [ ] Python fundamentals
-- [ ] Data Structures & Algorithms
-- [ ] Problem solving
-- [ ] FastAPI and REST APIs
-- [ ] SQL and PostgreSQL
-- [ ] Git and GitHub workflows
-- [ ] Linux and networking
-- [ ] Docker and deployment
-- [ ] System Design fundamentals
-- [ ] Open Source contribution
-
-</td>
-</tr>
-</table>
-
----
-
-## `> projects`
-
-I'm focused on building projects that demonstrate fundamentals, clean code, and practical engineering.
-
-| Project | Description | Status |
-|:---|:---|:---:|
-| Coming soon | Practical backend and software engineering projects | In progress |
-
----
-
-## `> github_activity`
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/dark/05-stack.svg"/>
+  <img src="assets/05-stack.svg" alt="05 — stack"/>
+</picture>
 
 <div align="center">
 
-<a href="https://github.com/vanshkalawatia">
+**LANGUAGES**
 
-<img height="165" src="https://github-readme-stats.vercel.app/api?username=vanshkalawatia&show_icons=true&hide_border=true&theme=midnight-purple&rank_icon=github" alt="GitHub statistics" />
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![C++](https://img.shields.io/badge/C++-00599C?style=flat-square&logo=cplusplus&logoColor=white)
+![SQL](https://img.shields.io/badge/SQL-4479A1?style=flat-square&logo=postgresql&logoColor=white)
 
-<img height="165" src="https://github-readme-stats.vercel.app/api/top-langs/?username=vanshkalawatia&layout=compact&hide_border=true&theme=midnight-purple" alt="Top languages" />
+**BACKEND & DATA**
 
-<img width="90%" src="https://streak-stats.demolab.com?user=vanshkalawatia&theme=midnight-purple&hide_border=true" alt="GitHub contribution streak" />
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)
+![REST APIs](https://img.shields.io/badge/REST_APIs-7952B3?style=flat-square)
 
-</a>
+**TOOLS & ENVIRONMENT**
+
+![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white)
+![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)
+![Fedora](https://img.shields.io/badge/Fedora-51A2DA?style=flat-square&logo=fedora&logoColor=white)
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=flat-square&logo=linux&logoColor=black)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
 
 </div>
 
@@ -136,10 +116,12 @@ I'm focused on building projects that demonstrate fundamentals, clean code, and 
 
 <div align="center">
 
-### `{ dream }  >  plan  >  code  >  improve  >  achieve`
+**CURRENTLY WORKING ON**
 
-**Building skills today. Building useful things tomorrow.**
+`Python` · `DSA` · `FastAPI` · `PostgreSQL` · `Open Source`
 
-[![GitHub](https://img.shields.io/badge/GitHub-VanshKalawatia-181717?style=for-the-badge&logo=github)](https://github.com/vanshkalawatia)
+*Learn deliberately. Build consistently. Improve continuously.*
+
+[GitHub repositories](https://github.com/vanshkalawatia?tab=repositories) · [Contact](mailto:vanshkalawatia2@gmail.com)
 
 </div>
