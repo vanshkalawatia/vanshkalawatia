@@ -1,7 +1,0 @@
-PROFILE SETUP
-1. Upload README.md to the public repository named exactly: vanshkalawatia
-2. Upload the complete assets/ directory.
-3. The avatar is expected at assets/avatar.png.
-4. If avatar.png is missing from this package, copy your existing pixelated portrait into assets/avatar.png.
-5. Edit the project table as you publish real projects.
-6. GitHub analytics are external image services and may occasionally be unavailable.
