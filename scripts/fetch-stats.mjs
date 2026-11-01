@@ -1,36 +1,49 @@
+
 // scripts/fetch-stats.mjs
 //
 // Fetches live GitHub data and renders it into custom SVGs:
 //   1. Telemetry panel      — language distribution (REST API)
 //   2. GitHub stats panel   — stars, commits, PRs, issues, contributed-to
-//                             + language-by-repo bars (GraphQL API)
-//   3. Contribution graph   — rolling 12-month commit bar chart (GraphQL API)
+//   3. Contribution graph   — rolling 12-month contribution chart (GraphQL)
 //
-// REST calls use the auto-provided GITHUB_TOKEN from Actions — no setup needed.
-// GraphQL calls need at least `read:user` scope. If GITHUB_TOKEN fails on the
-// GraphQL step with a permissions error, create a fine-grained Personal Access
-// Token (Settings → Developer settings → Fine-grained tokens, read:user scope),
-// add it as a repo secret (e.g. GH_STATS_TOKEN), and use that instead in the
-// workflow's env block.
+// Required environment variables:
+//   GITHUB_USERNAME
+//   GITHUB_TOKEN
 //
-// IMPORTANT: this script always reads from assets/templates/*.template.svg
-// (placeholders intact) and writes rendered output elsewhere. Never point a
-// template read at the same file the script writes to.
-//
-// Run with: GITHUB_TOKEN=xxx GITHUB_USERNAME=yourname node scripts/fetch-stats.mjs
+// Run:
+//   GITHUB_TOKEN=xxx GITHUB_USERNAME=vanshkalawatia node scripts/fetch-stats.mjs
 
 import fs from "node:fs/promises";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+// --------------------------------------------------
+// Repository paths
+// --------------------------------------------------
+
+// Resolve paths relative to this script instead of process.cwd().
+// This makes the script reliable inside GitHub Actions.
+
+const SCRIPT_DIR = path.dirname(fileURLToPath(import.meta.url));
+const REPO_ROOT = path.resolve(SCRIPT_DIR, "..");
+
+const repoPath = (...parts) => path.join(REPO_ROOT, ...parts);
+
+// --------------------------------------------------
+// Environment
+// --------------------------------------------------
 
 const USERNAME = process.env.GITHUB_USERNAME;
 const TOKEN = process.env.GITHUB_TOKEN;
 
 if (!USERNAME || !TOKEN) {
-  console.error("Missing GITHUB_USERNAME or GITHUB_TOKEN env vars.");
+  console.error("Missing GITHUB_USERNAME or GITHUB_TOKEN environment variables.");
   process.exit(1);
 }
 
 const API = "https://api.github.com";
 const GRAPHQL_API = "https://api.github.com/graphql";
+
 const headers = {
   Authorization: `Bearer ${TOKEN}`,
   Accept: "application/vnd.github+json",
@@ -39,71 +52,108 @@ const headers = {
 
 const MAX_LANGUAGE_ROWS = 5;
 
+// --------------------------------------------------
+// Template and output paths
+// --------------------------------------------------
+
 const TELEMETRY_TARGETS = [
   {
-    template: "assets/templates/telemetry-light.template.svg",
-    output: "assets/telemetry.svg",
+    template: repoPath("assets", "templates", "telemetry-light.template.svg"),
+    output: repoPath("assets", "telemetry.svg"),
   },
   {
-    template: "assets/templates/telemetry-dark.template.svg",
-    output: "assets/dark/telemetry.svg",
+    template: repoPath("assets", "templates", "telemetry-dark.template.svg"),
+    output: repoPath("assets", "dark", "telemetry.svg"),
   },
 ];
 
 const GITHUB_STATS_TARGETS = [
   {
-    template: "assets/templates/github-stats-light.template.svg",
-    output: "assets/github-stats.svg",
+    template: repoPath("assets", "templates", "github-stats-light.template.svg"),
+    output: repoPath("assets", "github-stats.svg"),
   },
   {
-    template: "assets/templates/github-stats-dark.template.svg",
-    output: "assets/dark/github-stats.svg",
+    template: repoPath("assets", "templates", "github-stats-dark.template.svg"),
+    output: repoPath("assets", "dark", "github-stats.svg"),
   },
 ];
 
 const CONTRIBUTION_TARGETS = [
   {
-    template: "assets/templates/contribution-graph-light.template.svg",
-    output: "assets/contribution-graph.svg",
+    template: repoPath(
+      "assets",
+      "templates",
+      "contribution-graph-light.template.svg"
+    ),
+    output: repoPath("assets", "contribution-graph.svg"),
   },
   {
-    template: "assets/templates/contribution-graph-dark.template.svg",
-    output: "assets/dark/contribution-graph.svg",
+    template: repoPath(
+      "assets",
+      "templates",
+      "contribution-graph-dark.template.svg"
+    ),
+    output: repoPath("assets", "dark", "contribution-graph.svg"),
   },
 ];
 
-// ---------- REST: repos + languages (unchanged approach) ----------
+// --------------------------------------------------
+// REST API: repositories and languages
+// --------------------------------------------------
 
 async function getAllRepos() {
   let repos = [];
   let page = 1;
+
   while (true) {
     const res = await fetch(
       `${API}/users/${USERNAME}/repos?per_page=100&page=${page}&type=owner`,
       { headers }
     );
-    if (!res.ok) throw new Error(`Failed to fetch repos: ${res.status}`);
+
+    if (!res.ok) {
+      throw new Error(`Failed to fetch repositories: ${res.status}`);
+    }
+
     const batch = await res.json();
+
     if (batch.length === 0) break;
+
     repos = repos.concat(batch);
     page++;
   }
-  return repos.filter((r) => !r.fork);
+
+  return repos.filter((repo) => !repo.fork);
 }
 
 async function getLanguagesForRepo(repoName) {
-  const res = await fetch(`${API}/repos/${USERNAME}/${repoName}/languages`, {
-    headers,
-  });
+  const res = await fetch(
+    `${API}/repos/${USERNAME}/${repoName}/languages`,
+    { headers }
+  );
+
   if (!res.ok) {
-    console.warn(`  ! skipped ${repoName} (${res.status})`);
+    console.warn(`  ! Skipped ${repoName} (${res.status})`);
     return {};
   }
+
   return res.json();
 }
 
+// --------------------------------------------------
+// Language calculations
+// --------------------------------------------------
+
 function toPercentages(totals) {
-  const totalBytes = Object.values(totals).reduce((a, b) => a + b, 0);
+  const totalBytes = Object.values(totals).reduce(
+    (sum, bytes) => sum + bytes,
+    0
+  );
+
+  if (totalBytes === 0) {
+    return [];
+  }
+
   const sorted = Object.entries(totals)
     .map(([lang, bytes]) => ({
       lang,
@@ -112,15 +162,24 @@ function toPercentages(totals) {
     .sort((a, b) => b.pct - a.pct);
 
   const top = sorted.slice(0, MAX_LANGUAGE_ROWS);
+
   const otherPct =
     Math.round(
-      sorted.slice(MAX_LANGUAGE_ROWS).reduce((sum, l) => sum + l.pct, 0) * 10
+      sorted
+        .slice(MAX_LANGUAGE_ROWS)
+        .reduce((sum, language) => sum + language.pct, 0) * 10
     ) / 10;
-  if (otherPct > 0) top.push({ lang: "other", pct: otherPct });
+
+  if (otherPct > 0) {
+    top.push({ lang: "other", pct: otherPct });
+  }
+
   return top;
 }
 
-// ---------- GraphQL: stars, commits, PRs, issues, contributed-to, calendar ----------
+// --------------------------------------------------
+// GraphQL API
+// --------------------------------------------------
 
 async function graphql(query) {
   const res = await fetch(GRAPHQL_API, {
@@ -131,38 +190,62 @@ async function graphql(query) {
     },
     body: JSON.stringify({ query }),
   });
+
+  if (!res.ok) {
+    throw new Error(`GitHub GraphQL HTTP error: ${res.status}`);
+  }
+
   const json = await res.json();
+
   if (json.errors) {
     throw new Error(
-      `GraphQL error: ${JSON.stringify(json.errors)} — if this is a permissions ` +
-        `error, your token likely needs the read:user scope. See the comment ` +
-        `at the top of this script.`
+      `GraphQL error: ${JSON.stringify(json.errors)}. ` +
+      "Check your token permissions. The token may need read:user scope."
     );
   }
+
+  if (!json.data?.user) {
+    throw new Error(`GitHub user not found: ${USERNAME}`);
+  }
+
   return json.data;
 }
 
 async function getGithubStats() {
   const now = new Date();
-  // Rolling 12-month window (e.g. Oct last year → Sep this year) instead of
-  // calendar-year-to-date, so the chart always shows a full 12 months and
-  // doesn't shrink to almost nothing every January.
+
+  // Rolling 12-month contribution window.
   const from = new Date(now);
   from.setFullYear(from.getFullYear() - 1);
+
   const fromISO = from.toISOString();
   const to = now.toISOString();
 
   const query = `
     query {
       user(login: "${USERNAME}") {
-        pullRequests { totalCount }
-        openIssues: issues(states: OPEN) { totalCount }
-        closedIssues: issues(states: CLOSED) { totalCount }
-        repositoriesContributedTo(first: 1, contributionTypes: [COMMIT, PULL_REQUEST, ISSUE]) {
+        pullRequests {
           totalCount
         }
+
+        openIssues: issues(states: OPEN) {
+          totalCount
+        }
+
+        closedIssues: issues(states: CLOSED) {
+          totalCount
+        }
+
+        repositoriesContributedTo(
+          first: 1
+          contributionTypes: [COMMIT, PULL_REQUEST, ISSUE]
+        ) {
+          totalCount
+        }
+
         contributionsCollection(from: "${fromISO}", to: "${to}") {
           totalCommitContributions
+
           contributionCalendar {
             weeks {
               contributionDays {
@@ -177,147 +260,314 @@ async function getGithubStats() {
   `;
 
   const data = await graphql(query);
-  const u = data.user;
+  const user = data.user;
 
   return {
-    totalCommits: u.contributionsCollection.totalCommitContributions,
-    totalPRs: u.pullRequests.totalCount,
-    totalIssues: u.openIssues.totalCount + u.closedIssues.totalCount,
-    contributedTo: u.repositoriesContributedTo.totalCount,
-    calendarDays: u.contributionsCollection.contributionCalendar.weeks.flatMap(
-      (w) => w.contributionDays
-    ),
+    totalCommits:
+      user.contributionsCollection.totalCommitContributions,
+
+    totalPRs: user.pullRequests.totalCount,
+
+    totalIssues:
+      user.openIssues.totalCount +
+      user.closedIssues.totalCount,
+
+    contributedTo:
+      user.repositoriesContributedTo.totalCount,
+
+    calendarDays:
+      user.contributionsCollection.contributionCalendar.weeks.flatMap(
+        (week) => week.contributionDays
+      ),
   };
 }
 
+// --------------------------------------------------
+// Monthly contribution calculations
+// --------------------------------------------------
+
 function monthlyTotalsFromCalendar(days) {
-  // Bucket each day's contribution count into its calendar month (last 12 months of data present)
-  const buckets = {}; // "2026-01" -> count
+  const buckets = {};
+
   for (const day of days) {
-    const month = day.date.slice(0, 7); // "YYYY-MM"
-    buckets[month] = (buckets[month] || 0) + day.contributionCount;
+    const month = day.date.slice(0, 7);
+
+    buckets[month] =
+      (buckets[month] || 0) + day.contributionCount;
   }
+
   const months = Object.keys(buckets).sort();
   const last12 = months.slice(-12);
-  return last12.map((m) => ({ month: m, count: buckets[m] }));
+
+  return last12.map((month) => ({
+    month,
+    count: buckets[month],
+  }));
 }
 
-// ---------- Rendering ----------
+// --------------------------------------------------
+// SVG rendering: telemetry
+// --------------------------------------------------
 
 function buildLanguageRowsTelemetry(languages) {
   const MAX_BAR_WIDTH = 220;
   const MIN_BAR_WIDTH = 4;
-  const topPct = Math.max(...languages.map((l) => l.pct));
+
+  const topPct = Math.max(
+    1,
+    ...languages.map((language) => language.pct)
+  );
 
   let bars = "";
+
   let yLabel = 108;
   let yBar = 116;
   let yPct = 123;
+
   const ROW_HEIGHT = 38;
 
   for (let i = 0; i < languages.length; i++) {
     const { lang, pct } = languages[i];
+
     const width = Math.max(
       MIN_BAR_WIDTH,
       Math.round((pct / topPct) * MAX_BAR_WIDTH)
     );
-    const fillVar = i === 0 ? "var(--accent)" : "var(--bone)";
+
+    const fillVar =
+      i === 0 ? "var(--accent)" : "var(--bone)";
+
     const barClass = `g${i + 1}`;
-    bars += `    <text fill="var(--bone)" x="48" y="${yLabel}">${lang.toLowerCase()}</text>       <rect class="bar ${barClass}" x="48" y="${yBar}" width="${width}" height="6" fill="${fillVar}"/><text fill="var(--muted)" x="${
-      48 + width + 10
-    }" y="${yPct}" font-size="10">${pct}%</text>\n`;
+
+    bars += `
+      <text fill="var(--bone)" x="48" y="${yLabel}">
+        ${lang.toLowerCase()}
+      </text>
+
+      <rect
+        class="bar ${barClass}"
+        x="48"
+        y="${yBar}"
+        width="${width}"
+        height="6"
+        fill="${fillVar}"
+      />
+
+      <text
+        fill="var(--muted)"
+        x="${48 + width + 10}"
+        y="${yPct}"
+        font-size="10"
+      >${pct}%</text>
+    `;
+
     yLabel += ROW_HEIGHT;
     yBar += ROW_HEIGHT;
     yPct += ROW_HEIGHT;
   }
+
   return bars.trim();
 }
 
+// --------------------------------------------------
+// SVG rendering: GitHub statistics
+// --------------------------------------------------
+
 function buildLanguageBarsForStatsPanel(languages) {
-  // Horizontal bars in the "LANGUAGES BY REPOSITORY" panel, x=660..930 (270px wide)
   const MAX_BAR_WIDTH = 270;
-  const topPct = Math.max(...languages.map((l) => l.pct));
+
+  const topPct = Math.max(
+    1,
+    ...languages.map((language) => language.pct)
+  );
 
   let rows = "";
-  let y = 105; // label baseline
-  let yRect = 94; // bar top
+
+  let y = 105;
+  let yRect = 94;
+
   const ROW_HEIGHT = 36;
 
   for (let i = 0; i < languages.length; i++) {
     const { lang, pct } = languages[i];
-    const width = Math.max(4, Math.round((pct / topPct) * MAX_BAR_WIDTH));
-    const growClass = i === 0 ? "grow" : `grow g${i + 1}`;
-    rows += `    <text x="548" y="${y}" font-size="10">${lang.toUpperCase()}</text><rect class="bar" x="660" y="${yRect}" width="${MAX_BAR_WIDTH}" height="12"/><rect class="fill ${growClass}" x="660" y="${yRect}" width="${width}" height="12"/>\n`;
+
+    const width = Math.max(
+      4,
+      Math.round((pct / topPct) * MAX_BAR_WIDTH)
+    );
+
+    const growClass =
+      i === 0 ? "grow" : `grow g${i + 1}`;
+
+    rows += `
+      <text x="548" y="${y}" font-size="10">
+        ${lang.toUpperCase()}
+      </text>
+
+      <rect
+        class="bar"
+        x="660"
+        y="${yRect}"
+        width="${MAX_BAR_WIDTH}"
+        height="12"
+      />
+
+      <rect
+        class="fill ${growClass}"
+        x="660"
+        y="${yRect}"
+        width="${width}"
+        height="12"
+      />
+    `;
+
     y += ROW_HEIGHT;
     yRect += ROW_HEIGHT;
   }
+
   return rows.trim();
 }
 
+// --------------------------------------------------
+// SVG rendering: contribution graph
+// --------------------------------------------------
+
 function buildContributionBars(monthly) {
-  // Simple bar chart across x=48..952, scaled to the busiest month
   const CHART_LEFT = 48;
   const CHART_RIGHT = 952;
   const CHART_TOP = 60;
   const CHART_BOTTOM = 180;
-  const maxCount = Math.max(1, ...monthly.map((m) => m.count));
-  const slot = (CHART_RIGHT - CHART_LEFT) / monthly.length;
+
+  const maxCount = Math.max(
+    1,
+    ...monthly.map((month) => month.count)
+  );
+
+  const slot =
+    (CHART_RIGHT - CHART_LEFT) /
+    Math.max(1, monthly.length);
+
   const barWidth = slot * 0.55;
 
   let bars = "";
-  monthly.forEach((m, i) => {
+
+  monthly.forEach((month, i) => {
     const height = Math.round(
-      ((CHART_BOTTOM - CHART_TOP) * m.count) / maxCount
+      ((CHART_BOTTOM - CHART_TOP) * month.count) /
+      maxCount
     );
-    const x = CHART_LEFT + i * slot + (slot - barWidth) / 2;
+
+    const x =
+      CHART_LEFT +
+      i * slot +
+      (slot - barWidth) / 2;
+
     const y = CHART_BOTTOM - height;
-    const label = m.month.slice(5, 7); // "MM"
-    bars += `    <rect class="bar" x="${x.toFixed(
-      1
-    )}" y="${y}" width="${barWidth.toFixed(
-      1
-    )}" height="${height}" fill="var(--ink)" style="transform-origin:${x.toFixed(
-      1
-    )}px ${CHART_BOTTOM}px"/>\n`;
-    bars += `    <text x="${(x + barWidth / 2).toFixed(
-      1
-    )}" y="${CHART_BOTTOM + 16}" text-anchor="middle" fill="var(--dim)">${label}</text>\n`;
+    const label = month.month.slice(5, 7);
+
+    bars += `
+      <rect
+        class="bar"
+        x="${x.toFixed(1)}"
+        y="${y}"
+        width="${barWidth.toFixed(1)}"
+        height="${height}"
+        fill="var(--ink)"
+        style="transform-origin:${x.toFixed(1)}px ${CHART_BOTTOM}px"
+      />
+
+      <text
+        x="${(x + barWidth / 2).toFixed(1)}"
+        y="${CHART_BOTTOM + 16}"
+        text-anchor="middle"
+        fill="var(--dim)"
+      >${label}</text>
+    `;
   });
+
   return bars.trim();
 }
 
-async function renderFromTemplate(templatePath, outputPath, replacements) {
-  let svg = await fs.readFile(templatePath, "utf8");
+// --------------------------------------------------
+// Template renderer
+// --------------------------------------------------
+
+async function renderFromTemplate(
+  templatePath,
+  outputPath,
+  replacements
+) {
+  let svg;
+
+  try {
+    svg = await fs.readFile(templatePath, "utf8");
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      throw new Error(
+        `Template not found: ${path.relative(REPO_ROOT, templatePath)}\n` +
+        `Repository root: ${REPO_ROOT}\n` +
+        `Script directory: ${SCRIPT_DIR}\n` +
+        "Check that the template is committed to the same branch and commit being built."
+      );
+    }
+
+    throw error;
+  }
+
   for (const [placeholder, value] of Object.entries(replacements)) {
     svg = svg.replaceAll(placeholder, value);
   }
-  const dir = outputPath.split("/").slice(0, -1).join("/") || ".";
+
+  const dir = path.dirname(outputPath);
+
   await fs.mkdir(dir, { recursive: true });
-  await fs.writeFile(outputPath, svg);
-  console.log(`Wrote ${outputPath}`);
+  await fs.writeFile(outputPath, svg, "utf8");
+
+  console.log(
+    `Wrote ${path.relative(REPO_ROOT, outputPath)}`
+  );
 }
 
-// ---------- Main ----------
+// --------------------------------------------------
+// Main
+// --------------------------------------------------
 
 async function main() {
-  console.log(`Fetching repos for ${USERNAME}...`);
+  console.log(`Working directory: ${process.cwd()}`);
+  console.log(`Repository root: ${REPO_ROOT}`);
+  console.log(`Script directory: ${SCRIPT_DIR}`);
+
+  console.log(`Fetching repositories for ${USERNAME}...`);
+
   const repos = await getAllRepos();
-  console.log(`Found ${repos.length} public, non-fork repos.`);
+
+  console.log(
+    `Found ${repos.length} public, non-fork repositories.`
+  );
 
   const languageTotals = {};
   let totalStars = 0;
+
   for (const repo of repos) {
     totalStars += repo.stargazers_count || 0;
-    const langs = await getLanguagesForRepo(repo.name);
-    for (const [lang, bytes] of Object.entries(langs)) {
-      languageTotals[lang] = (languageTotals[lang] || 0) + bytes;
+
+    const languages =
+      await getLanguagesForRepo(repo.name);
+
+    for (const [lang, bytes] of Object.entries(languages)) {
+      languageTotals[lang] =
+        (languageTotals[lang] || 0) + bytes;
     }
   }
+
   const languages = toPercentages(languageTotals);
 
   console.log("Fetching GitHub stats via GraphQL...");
+
   const ghStats = await getGithubStats();
-  const monthly = monthlyTotalsFromCalendar(ghStats.calendarDays);
+
+  const monthly =
+    monthlyTotalsFromCalendar(ghStats.calendarDays);
 
   const stats = {
     generatedAt: new Date().toISOString(),
@@ -331,43 +581,88 @@ async function main() {
     monthlyContributions: monthly,
   };
 
-  console.log("Computed stats:", JSON.stringify(stats, null, 2));
+  console.log(
+    "Computed stats:",
+    JSON.stringify(stats, null, 2)
+  );
 
-  await fs.mkdir("assets", { recursive: true });
-  await fs.writeFile("assets/stats.json", JSON.stringify(stats, null, 2));
+  // Save raw statistics.
+  await fs.mkdir(repoPath("assets"), {
+    recursive: true,
+  });
 
-  // 1. Telemetry panel
-  const telemetryBars = buildLanguageRowsTelemetry(languages);
-  for (const t of TELEMETRY_TARGETS) {
-    await renderFromTemplate(t.template, t.output, {
-      "<!-- LANGUAGE_ROWS -->": telemetryBars,
-      "{{REPO_COUNT}}": String(stats.repoCount),
-    });
+  await fs.writeFile(
+    repoPath("assets", "stats.json"),
+    JSON.stringify(stats, null, 2),
+    "utf8"
+  );
+
+  // ----------------------------------------------
+  // 1. Telemetry panels
+  // ----------------------------------------------
+
+  const telemetryBars =
+    buildLanguageRowsTelemetry(languages);
+
+  for (const target of TELEMETRY_TARGETS) {
+    await renderFromTemplate(
+      target.template,
+      target.output,
+      {
+        "<!-- LANGUAGE_ROWS -->": telemetryBars,
+        "{{REPO_COUNT}}": String(stats.repoCount),
+      }
+    );
   }
 
-  // 2. GitHub stats panel
-  const statsLangBars = buildLanguageBarsForStatsPanel(languages);
-  for (const t of GITHUB_STATS_TARGETS) {
-    await renderFromTemplate(t.template, t.output, {
-      "{{TOTAL_STARS}}": String(stats.totalStars),
-      "{{TOTAL_COMMITS}}": String(stats.totalCommits),
-      "{{TOTAL_PRS}}": String(stats.totalPRs),
-      "{{TOTAL_ISSUES}}": String(stats.totalIssues),
-      "{{CONTRIBUTED_TO}}": String(stats.contributedTo),
-      "<!-- LANGUAGE_BAR_ROWS -->": statsLangBars,
-    });
+  // ----------------------------------------------
+  // 2. GitHub statistics panels
+  // ----------------------------------------------
+
+  const statsLangBars =
+    buildLanguageBarsForStatsPanel(languages);
+
+  for (const target of GITHUB_STATS_TARGETS) {
+    await renderFromTemplate(
+      target.template,
+      target.output,
+      {
+        "{{TOTAL_STARS}}": String(stats.totalStars),
+        "{{TOTAL_COMMITS}}": String(stats.totalCommits),
+        "{{TOTAL_PRS}}": String(stats.totalPRs),
+        "{{TOTAL_ISSUES}}": String(stats.totalIssues),
+        "{{CONTRIBUTED_TO}}": String(stats.contributedTo),
+        "<!-- LANGUAGE_BAR_ROWS -->": statsLangBars,
+      }
+    );
   }
 
-  // 3. Contribution graph
-  const contributionBars = buildContributionBars(monthly);
-  for (const t of CONTRIBUTION_TARGETS) {
-    await renderFromTemplate(t.template, t.output, {
-      "<!-- CONTRIBUTION_BARS -->": contributionBars,
-    });
+  // ----------------------------------------------
+  // 3. Contribution graph panels
+  // ----------------------------------------------
+
+  const contributionBars =
+    buildContributionBars(monthly);
+
+  for (const target of CONTRIBUTION_TARGETS) {
+    await renderFromTemplate(
+      target.template,
+      target.output,
+      {
+        "<!-- CONTRIBUTION_BARS -->": contributionBars,
+      }
+    );
   }
+
+  console.log("All GitHub statistics SVGs generated successfully!");
 }
 
-main().catch((err) => {
-  console.error(err);
+// --------------------------------------------------
+// Error handling
+// --------------------------------------------------
+
+main().catch((error) => {
+  console.error("Failed to generate GitHub statistics:");
+  console.error(error);
   process.exit(1);
 });
