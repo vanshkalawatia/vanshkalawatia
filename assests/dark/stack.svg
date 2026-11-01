@@ -1,0 +1,7 @@
+<svg viewBox="0 0 1000 330" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Vansh technical stack and learning focus"><style>:root{--ink:#444;--muted:#888;--rule:#ccc}@media(prefers-color-scheme:dark){:root{--ink:#ddd;--muted:#888;--rule:#444}}.mono{font-family:ui-monospace,Menlo,Consolas,monospace}.head{font-size:12px;letter-spacing:2px;fill:var(--muted)}.body{font-size:16px;fill:var(--ink)}</style>
+<g class="mono"><text class="head" x="48" y="36">LANGUAGES</text><text class="body" x="250" y="36">Python · JavaScript (basics)</text><path d="M48 52H952" stroke="var(--rule)"/>
+<text class="head" x="48" y="88">BACKEND</text><text class="body" x="250" y="88">FastAPI · REST APIs · HTTP fundamentals</text><path d="M48 104H952" stroke="var(--rule)"/>
+<text class="head" x="48" y="140">DATABASES</text><text class="body" x="250" y="140">SQL · PostgreSQL (learning)</text><path d="M48 156H952" stroke="var(--rule)"/>
+<text class="head" x="48" y="192">PRACTICE</text><text class="body" x="250" y="192">Data Structures · Algorithms · Problem Solving</text><path d="M48 208H952" stroke="var(--rule)"/>
+<text class="head" x="48" y="244">ENVIRONMENT</text><text class="body" x="250" y="244">Fedora Linux · Bash · Git · GitHub · VS Code</text><path d="M48 260H952" stroke="var(--rule)"/>
+<text class="head" x="48" y="296">NEXT UP</text><text class="body" x="250" y="296">Testing · Docker · Deployment · Open source contributions</text></g></svg>
