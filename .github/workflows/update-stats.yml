@@ -3,7 +3,6 @@ name: Update telemetry stats
 
 on:
   schedule:
-    # Run once every day at 00:00 UTC
     - cron: "0 0 * * *"
 
   workflow_dispatch:
@@ -32,6 +31,26 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # TEMPORARY DEBUG STEP
+      - name: Debug repository files
+        run: |
+          echo "Current branch:"
+          git branch --show-current
+
+          echo "Current commit:"
+          git rev-parse HEAD
+
+          echo "Template directory:"
+          ls -la assets/templates/ || true
+
+          echo "Tracked template files:"
+          git ls-tree -r HEAD -- assets/templates/
+
+          echo "Check required template:"
+          test -f assets/templates/telemetry-light.template.svg \
+            && echo "FOUND" \
+            || echo "MISSING"
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -58,7 +77,7 @@ jobs:
             assets/stats.json
 
           if git diff --cached --quiet; then
-            echo "No statistics changes to commit."
+            echo "No statistics changes."
           else
             git commit -m "chore: refresh telemetry stats"
             git push
