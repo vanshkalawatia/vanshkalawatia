@@ -82,3 +82,11 @@ jobs:
             git commit -m "chore: refresh telemetry stats"
             git push
           fi
+
+      - name: Verify template files
+        run: |
+          pwd
+          git rev-parse HEAD
+          find . -iname "*telemetry*"
+          ls -la assets/templates/
+          test -f assets/templates/telemetry-light.template.svg && echo "TEMPLATE FOUND" || echo "TEMPLATE MISSING"
