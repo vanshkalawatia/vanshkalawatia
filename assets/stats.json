@@ -1,45 +1,49 @@
 {
-  "generatedAt": "2026-11-01T00:58:31.923Z",
-  "repoCount": 6,
-  "totalStars": 4,
+  "generatedAt": "2026-10-31T22:14:25.076Z",
+  "repoCount": 35,
+  "totalStars": 16,
   "languages": [
     {
-      "lang": "TypeScript",
-      "pct": 85.1
+      "lang": "Python",
+      "pct": 81.8
     },
     {
       "lang": "JavaScript",
-      "pct": 4.8
+      "pct": 16.2
     },
     {
-      "lang": "TeX",
-      "pct": 4.2
+      "lang": "C++",
+      "pct": 0.8
+    },
+    {
+      "lang": "HTML",
+      "pct": 0.5
     },
     {
       "lang": "CSS",
-      "pct": 3.3
-    },
-    {
-      "lang": "Python",
-      "pct": 1.5
+      "pct": 0.3
     },
     {
       "lang": "other",
-      "pct": 1.1
+      "pct": 0.5
     }
   ],
-  "totalCommits": 90,
-  "totalPRs": 0,
+  "totalCommits": 73,
+  "totalPRs": 7,
   "totalIssues": 0,
   "contributedTo": 0,
   "monthlyContributions": [
+    {
+      "month": "2025-11",
+      "count": 0
+    },
     {
       "month": "2025-12",
       "count": 0
     },
     {
       "month": "2026-01",
-      "count": 0
+      "count": 1
     },
     {
       "month": "2026-02",
@@ -51,7 +55,7 @@
     },
     {
       "month": "2026-04",
-      "count": 0
+      "count": 17
     },
     {
       "month": "2026-05",
@@ -59,27 +63,23 @@
     },
     {
       "month": "2026-06",
-      "count": 4
+      "count": 0
     },
     {
       "month": "2026-07",
-      "count": 3
+      "count": 0
     },
     {
       "month": "2026-08",
-      "count": 2
+      "count": 0
     },
     {
       "month": "2026-09",
-      "count": 27
+      "count": 52
     },
     {
       "month": "2026-10",
-      "count": 34
-    },
-    {
-      "month": "2026-11",
-      "count": 27
+      "count": 10
     }
   ]
 }
