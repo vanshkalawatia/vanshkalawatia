@@ -1,0 +1,9 @@
+VANSH — GITHUB PROFILE README
+
+1. Create a PUBLIC GitHub repository named exactly: vanshkalawatia
+2. Upload the contents of this folder (README.md, assets/, scripts/, .github/). Do not upload the outer folder itself.
+3. Commit to the main branch. GitHub Actions will refresh the stats and telemetry using your public GitHub data.
+4. In the repository, open Settings → Actions → General and ensure workflows have read/write repository permissions if the workflow cannot commit updates.
+5. Edit README.md and assets/ when you have real project links, LinkedIn, or portfolio details to add.
+
+The profile describes you as a student learning Python/backend engineering. It intentionally does not claim professional experience or completed projects.
