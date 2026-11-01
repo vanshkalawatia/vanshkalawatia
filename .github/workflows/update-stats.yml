@@ -1,39 +1,65 @@
+
 name: Update telemetry stats
 
 on:
   schedule:
-    # Runs every hour, on the hour — adjust as you like
-    - cron: "0 * * * *"
-  workflow_dispatch: {}   # lets you trigger it manually from the Actions tab
+    # Run once every day at 00:00 UTC
+    - cron: "0 0 * * *"
+
+  workflow_dispatch:
+
   push:
-    branches: [main]      # optional: also refresh on every push to main
+    branches:
+      - main
+    paths:
+      - "scripts/**"
+      - "assets/templates/**"
+      - ".github/workflows/update-stats.yml"
 
 permissions:
   contents: write
 
+concurrency:
+  group: update-telemetry-stats
+  cancel-in-progress: false
+
 jobs:
   update-stats:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
 
-      - name: Fetch stats and regenerate SVG
+      - name: Fetch stats and regenerate SVGs
         env:
           GITHUB_USERNAME: vanshkalawatia
-          # GITHUB_TOKEN is auto-provided by Actions — no need to create your own
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: node scripts/fetch-stats.mjs
 
-      - name: Commit updated files
+      - name: Commit and push updated stats
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add assets/telemetry.svg assets/dark/telemetry.svg assets/github-stats.svg assets/dark/github-stats.svg assets/contribution-graph.svg assets/dark/contribution-graph.svg assets/stats.json
-          git diff --quiet --cached || git commit -m "chore: refresh telemetry stats"
-          git push
+
+          git add \
+            assets/telemetry.svg \
+            assets/dark/telemetry.svg \
+            assets/github-stats.svg \
+            assets/dark/github-stats.svg \
+            assets/contribution-graph.svg \
+            assets/dark/contribution-graph.svg \
+            assets/stats.json
+
+          if git diff --cached --quiet; then
+            echo "No statistics changes to commit."
+          else
+            git commit -m "chore: refresh telemetry stats"
+            git push
+          fi
