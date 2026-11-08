@@ -36,6 +36,7 @@
 <table>
 <tr>
 <td valign="top" width="33%">
+ 
 **Learning now**
  
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
@@ -45,6 +46,7 @@
  
 </td>
 <td valign="top" width="33%">
+ 
 **Up next (Dec – Feb)**
  
 ![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square&logo=fastapi&logoColor=white)
@@ -55,6 +57,7 @@
  
 </td>
 <td valign="top" width="33%">
+ 
 **Later (Mar 2027+)**
  
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
