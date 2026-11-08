@@ -13,8 +13,8 @@
 - 🎯 Goal: first real internship in **2027**, full-time backend role after graduation
 - 🌱 Interested in: **backend engineering, Go, systems-level thinking**
 - 🤝 Mentor others in technical learning
-- 🧪 Daily practice lives on my side-quest account: [@YOUR_SIDE_QUEST_USERNAME](https://github.com/YOUR_SIDE_QUEST_USERNAME)
-- 📫 Reach me: **your@email.com**
+- 🧪 Daily practice lives on my side-quest account: [@vanshkalawatia](https://github.com/YOUR_SIDE_QUEST_USERNAME)
+- 📫 Reach me: **vanshkalawatia2@gmail.com**
   
 ---
  
