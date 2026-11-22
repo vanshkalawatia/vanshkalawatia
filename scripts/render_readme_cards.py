@@ -1,13 +1,10 @@
 #!/usr/bin/env python3
 """
 Render Vansh Kalawatia's profile README cards as animated SVGs into cards/.
-Design system: Golden Ratio (phi = 1.618) with exact vertical rhythm and zero text collisions.
+Theme: Monochrome Manga Noir.
 Cards:
-- hero.svg (Golden section split: 544px Left / 336px Right)
-- identity.svg (Tile 01: The Engineer, 3rd Year CSE)
-- stack.svg (Tile 02: The Architecture, FastAPI & Python)
-- mindset.svg (Tile 03: The Philosophy, Stoic Grit)
-- whoami.svg (Spacious full-width card with zero overlapping text)
+- hero.svg (Clean, bold, zero filler description below name)
+- about.svg (Single authentic developer card: Who I Am & What I Do)
 - heatmap.svg (Contribution graph in monochrome ink)
 - title-coding-dark.svg / title-coding-light.svg (Featured Repositories title)
 - repo-Phase-1-First-Real-Tools.svg
@@ -39,17 +36,7 @@ TEXT_MAIN = "#f0f6fc"      # Pure white
 TEXT_MUTED = "#8b949e"     # Fog grey
 TEXT_SILVER = "#c9d1d9"    # Chrome silver
 ACCENT = "#ffffff"         # Crisp highlight
-
-# Grid layout tokens matching AVIVASHISHTA29
 W = 880                    # Full width
-
-# Tri-Card tiles: width = 285.333 (880/3 - 8), height = 205 (generous vertical rhythm)
-TILE_W = 285.333
-TILE_H = 205
-
-# Repo cards: width = 285.333, height = 176
-REPO_W = 285.333
-REPO_H = 176
 
 SERIF = "'Instrument Serif', Georgia, serif"
 SANS = "Geist, system-ui, -apple-system, sans-serif"
@@ -129,7 +116,7 @@ def text_lines(x, y, lines, lh, attrs):
         f'<text x="{x}" y="{y + i * lh}" {attrs}>{escape(l)}</text>' for i, l in enumerate(lines)
     )
 
-# ---- 1 · GENERATE REFINED CAT ASCII (36 chars x 25 lines) ----
+# ---- 1 · GENERATE REFINED CAT ASCII ----
 def get_cat_ascii_lines(target_w=36, target_h=25):
     if not os.path.exists(AVATAR_CLEAN):
         return []
@@ -151,15 +138,15 @@ def get_cat_ascii_lines(target_w=36, target_h=25):
         lines.append(row.rstrip())
     return lines
 
-# ---- 2 · HERO CARD (Golden Section: 544px Left / 336px Right) -----------------
+# ---- 2 · HERO CARD (Bold, Iconic, No Useless Filler Text) ----------------------
 def hero():
-    h = 420
+    h = 380  # Clean, proportional height without useless description
     ascii_rows = get_cat_ascii_lines(36, 25)
     
     ascii_svg_lines = []
-    base_x = 574
-    base_y = 66
-    line_h = 13.5
+    base_x = 565
+    base_y = 52
+    line_h = 13.2
     for i, line_str in enumerate(ascii_rows):
         delay = 0.25 + i * 0.02
         color = "#ffffff" if (5 <= i <= 16) else "#c9d1d9"
@@ -188,106 +175,74 @@ def hero():
 <rect width="{W}" height="{h}" rx="14" fill="url(#manga_dots)"/>
 <rect x="0.75" y="0.75" width="{W - 1.5}" height="{h - 1.5}" rx="13.25" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
 
-<!-- Left Column (0 - 544px) -->
+<!-- Left Column: Identity -->
 <g class="f" {d(0)}>
   <rect class="live" x="48" y="46" width="8" height="8" rx="2" fill="{ACCENT}"/>
-  <text x="66" y="54" font-family="{MONO}" font-size="11.5" letter-spacing="1.2" fill="{TEXT_MUTED}">PYTHON BACKEND ENGINEER · 3RD YEAR CSE · @despair0x00</text>
+  <text x="66" y="54" font-family="{MONO}" font-size="11.5" letter-spacing="1.2" fill="{TEXT_MUTED}">BACKEND DEVELOPER · 3RD YEAR CSE · @despair0x00</text>
 </g>
 
-<text class="r" {d(0.15)} x="46" y="174" font-family="{SERIF}" font-size="92" letter-spacing="-2" fill="{TEXT_MAIN}">Vansh</text>
-<text class="r" {d(0.3)} x="46" y="260" font-family="{SERIF}" font-style="italic" font-size="92" letter-spacing="-2" fill="url(#shine)">Kalawatia</text>
+<!-- Big Bold Serif Name (No useless filler text below it) -->
+<text class="r" {d(0.15)} x="46" y="174" font-family="{SERIF}" font-size="96" letter-spacing="-2" fill="{TEXT_MAIN}">Vansh</text>
+<text class="r" {d(0.3)} x="46" y="264" font-family="{SERIF}" font-style="italic" font-size="96" letter-spacing="-2" fill="url(#shine)">Kalawatia</text>
 
-<g class="r" {d(0.55)}>
-  {text_lines(48, 314, ["Specializing in high-throughput backends & async APIs.", "Targeting Summer 2027 Python Backend Internship."], 25, f'font-family="{SANS}" font-size="15.5" fill="{TEXT_SILVER}"')}
+<!-- Clean Footer Link -->
+<g class="f" {d(0.55)}>
+  <text x="48" y="336" font-family="{MONO}" font-size="13" fill="{TEXT_MAIN}">linkedin.com/in/vanshkalawatia</text>
+  <text class="nu" x="290" y="336" font-family="{MONO}" font-size="13" fill="{ACCENT}">&#8599;</text>
 </g>
 
-<g class="f" {d(0.8)}>
-  <text x="48" y="388" font-family="{MONO}" font-size="12.5" fill="{TEXT_MAIN}">linkedin.com/in/vanshkalawatia</text>
-  <text class="nu" x="282" y="388" font-family="{MONO}" font-size="12.5" fill="{ACCENT}">&#8599;</text>
-</g>
-
-<!-- Right Column (544 - 880px) -->
+<!-- Right Column: Refined Pure ASCII Cat Avatar -->
 <g class="f" {d(0.2)}>
 {''.join(ascii_svg_lines)}
 </g>
 """
     write("hero.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
-                          "Vansh Kalawatia · despair0x00. Python Backend Engineer. Targeting Summer 2027 Internship."))
+                          "Vansh Kalawatia · despair0x00. Backend Developer · 3rd Year CSE."))
 
-# ---- 3 · THREE IDENTITY TILES (ZERO COLLISION, 40px+ BREATHING ROOM) ---------
-def identity_tile(name, tag, big_serif, italic_tail, blurb_lines, meta, delay, pos):
-    # Generous vertical coordinates:
-    # Tag: y = 34
-    # Big Serif: y = 76
-    # Blurb: y = 108 + i * 20 (line 0 = 108, line 1 = 128)
-    # Meta: y = 180 (gap to line 1 is 52px!)
-    blurb_svg = "".join(
-        f'<text x="22" y="{108 + i * 20}" font-family="{SANS}" font-size="13" fill="{TEXT_SILVER}">{escape(l)}</text>'
-        for i, l in enumerate(blurb_lines)
-    )
-    body = f"""
-<rect width="{TILE_W}" height="{TILE_H}" rx="14" fill="{SURFACE}"/>
-<rect x="0.75" y="0.75" width="{TILE_W - 1.5}" height="{TILE_H - 1.5}" rx="13.25" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
-<g class="r" {d(delay)}>
-  <text x="22" y="34" font-family="{MONO}" font-size="11" letter-spacing="1.2" fill="{TEXT_MUTED}">{escape(tag)}</text>
-  <text x="{TILE_W - 28}" y="34" font-family="{MONO}" font-size="12" fill="{ACCENT}">↗</text>
-  <text x="20" y="76" font-family="{SERIF}" font-size="34" fill="{TEXT_MAIN}">{escape(big_serif)} <tspan font-style="italic" fill="{TEXT_SILVER}">{escape(italic_tail)}</tspan></text>
-  {blurb_svg}
-  <text x="22" y="180" font-family="{MONO}" font-size="11" fill="{TEXT_MUTED}">{escape(meta)}</text>
-</g>
-"""
-    write(f"{name}.svg", svg(TILE_W, TILE_H, body, ["serif", "serif-i", "sans", "mono"],
-                             f"{tag}: {big_serif} {italic_tail}. {' '.join(blurb_lines)}",
-                             left=4 * pos, right=8 - 4 * pos))
-
-# ---- 4 · FULL-WIDTH "WHO AM I" (Zero Overlap) ----------------------------------
-def whoami():
-    h = 320
+# ---- 3 · SINGLE AUTHENTIC CARD: "WHO I AM & WHAT I DO" (about.svg) ------------
+def about_me():
+    h = 290
     body = f"""
 <defs>
-  <pattern id="whoami_grid" width="24" height="24" patternUnits="userSpaceOnUse">
+  <pattern id="about_grid" width="24" height="24" patternUnits="userSpaceOnUse">
     <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#21262d" stroke-width="0.5" opacity="0.35"/>
   </pattern>
 </defs>
 <rect width="{W}" height="{h}" rx="14" fill="{BG_MAIN}"/>
-<rect width="{W}" height="{h}" rx="14" fill="url(#whoami_grid)"/>
+<rect width="{W}" height="{h}" rx="14" fill="url(#about_grid)"/>
 <rect x="0.75" y="0.75" width="{W - 1.5}" height="{h - 1.5}" rx="13.25" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
 
 <!-- Top Metadata Pill -->
 <g class="f" {d(0.1)}>
-  <rect class="live" x="48" y="36" width="7" height="7" rx="2" fill="{ACCENT}"/>
-  <text x="64" y="43" font-family="{MONO}" font-size="11" letter-spacing="1.5" fill="{TEXT_MUTED}">WHO I AM // IDENTITY, ARCHITECTURE &amp; MINDSET</text>
+  <rect class="live" x="48" y="34" width="7" height="7" rx="2" fill="{ACCENT}"/>
+  <text x="64" y="41" font-family="{MONO}" font-size="11" letter-spacing="1.5" fill="{TEXT_MUTED}">ABOUT ME // WHO I AM &amp; WHAT I DO</text>
 </g>
 
 <!-- Big Editorial Title -->
-<text class="r" {d(0.2)} x="46" y="86" font-family="{SERIF}" font-size="37" fill="{TEXT_MAIN}">The Engineer <tspan font-style="italic" fill="{TEXT_SILVER}">&amp; The Philosophy</tspan></text>
+<text class="r" {d(0.2)} x="46" y="84" font-family="{SERIF}" font-size="36" fill="{TEXT_MAIN}">Who I Am <tspan font-style="italic" fill="{TEXT_SILVER}">&amp; What I Do</tspan></text>
 
-<!-- Golden Divider Line -->
-<line x1="48" y1="108" x2="{W - 48}" y2="108" stroke="{BORDER}" stroke-width="1"/>
+<!-- Divider Line -->
+<line x1="48" y1="104" x2="{W - 48}" y2="104" stroke="{BORDER}" stroke-width="1"/>
 
-<!-- Background & Goal (Full width) -->
+<!-- Real Developer Content -->
+<!-- 01 · Who I Am -->
 <g class="r" {d(0.35)}>
-  <text x="48" y="142" font-family="{MONO}" font-size="11.5" letter-spacing="1.5" fill="#58a6ff">// 01 · BACKGROUND &amp; GOAL</text>
-  <text x="48" y="172" font-family="{SANS}" font-size="14.5" fill="{TEXT_MAIN}">3rd-year B.Tech CSE undergrad in India targeting a <tspan font-weight="600" fill="#ffffff">Summer 2027</tspan> Python Backend Internship.</text>
-  <text x="48" y="196" font-family="{SANS}" font-size="13.5" fill="{TEXT_MUTED}">Architecting high-throughput REST APIs, asynchronous worker pipelines, and scalable database systems.</text>
+  <text x="48" y="136" font-family="{MONO}" font-size="11" letter-spacing="1.5" fill="#58a6ff">// WHO I AM</text>
+  <text x="48" y="162" font-family="{SANS}" font-size="14.5" fill="{TEXT_MAIN}">3rd-year Computer Science undergrad in India passionate about backend engineering, clean architecture,</text>
+  <text x="48" y="184" font-family="{SANS}" font-size="14.5" fill="{TEXT_MAIN}">and writing robust software from scratch. Targeting a <tspan font-weight="600" fill="#ffffff">Summer 2027 Backend Internship</tspan>.</text>
 </g>
 
-<!-- Stack & Mindset (Spacious separate bands) -->
+<!-- 02 · What I Do -->
 <g class="r" {d(0.5)}>
-  <text x="48" y="240" font-family="{MONO}" font-size="11.5" letter-spacing="1.5" fill="#c9d1d9">// 02 · ARCHITECTURE</text>
-  <text x="48" y="268" font-family="{MONO}" font-size="12" fill="{TEXT_MAIN}">Python 3.12 · FastAPI · PostgreSQL · Redis · Docker · Linux</text>
-</g>
-
-<g class="r" {d(0.6)}>
-  <text x="495" y="240" font-family="{MONO}" font-size="11.5" letter-spacing="1.5" fill="#7ee787">// 03 · THE MINDSET</text>
-  <text x="495" y="268" font-family="{SERIF}" font-style="italic" font-size="18" fill="{TEXT_MAIN}">"Surpassing my limits... that's all I've ever known."</text>
-  <text x="495" y="292" font-family="{MONO}" font-size="11" fill="{TEXT_MUTED}">— Vegeta / Guts (Berserk) · Methodical, disciplined grit</text>
+  <text x="48" y="222" font-family="{MONO}" font-size="11" letter-spacing="1.5" fill="#7ee787">// WHAT I DO &amp; TECH STACK</text>
+  <text x="48" y="248" font-family="{SANS}" font-size="14" fill="{TEXT_SILVER}">Building asynchronous REST APIs &amp; CLI tools with <tspan fill="{TEXT_MAIN}" font-weight="600">Python 3.12</tspan> and <tspan fill="{TEXT_MAIN}" font-weight="600">FastAPI</tspan>.</text>
+  <text x="48" y="268" font-family="{MONO}" font-size="12" fill="{TEXT_MUTED}">STORAGE &amp; INFRA : <tspan fill="{TEXT_SILVER}">PostgreSQL · Redis · Docker · Linux · Daily LeetCode (DSA in Python)</tspan></text>
 </g>
 """
-    write("whoami.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
-                            "Who Am I: Identity, Engineering, Background and Philosophy of Vansh Kalawatia."))
+    write("about.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
+                           "Who I Am & What I Do. Vansh Kalawatia - Backend Developer."))
 
-# ---- 5 · HEATMAP (Monochrome Manga Noir) ---------------------------------------
+# ---- 4 · HEATMAP (Monochrome Manga Noir) ---------------------------------------
 NOIR_LEVELS = ["#161b22", "#2d333b", "#444c56", "#768390", "#adbac7", "#f0f6fc"]
 
 def level_for(c):
@@ -339,7 +294,9 @@ def heatmap(data):
     write("heatmap.svg", svg(W, h, body, ["serif", "serif-i", "mono"],
                              f'Contribution graph in noir: {data["total_contributions"]:,} contributions in the last year'))
 
-# ---- 6 · REPOSITORY CARDS ------------------------------------------------------
+# ---- 5 · REPOSITORY CARDS ------------------------------------------------------
+REPO_W, REPO_H = 285.333, 176
+
 REAL_REPOS = [
     ("Phase-1-First-Real-Tools", "Production CLI tools with persistent storage, JSON, file I/O & API integration.", "Python", "#ffffff", "active"),
     ("Back-end-Roadmap", "Backend developer roadmap 2026: APIs, PostgreSQL, Redis, Docker & system design.", "System Design", "#c9d1d9", "active"),
@@ -363,7 +320,7 @@ def repo_card(i, name, desc, lang, tag_color, meta_tag):
     write(f"repo-{name}.svg", svg(REPO_W, REPO_H, body, ["sans", "sans-b", "mono"], f"{name}: {desc}",
                                   left=4 * i, right=8 - 4 * i))
 
-# ---- 7 · SECTION TITLES --------------------------------------------------------
+# ---- 6 · SECTION TITLES --------------------------------------------------------
 def section_title(text, italic, theme):
     fg = TEXT_MAIN if theme == "dark" else "#111111"
     body = (
@@ -375,19 +332,10 @@ def section_title(text, italic, theme):
 if __name__ == "__main__":
     data = json.load(open(DATA, "r", encoding="utf-8"))
     hero()
-    identity_tile("identity", "01 // THE ENGINEER", "3rd Year", "CSE",
-                  ["Targeting Summer 2027 Python", "Backend Internship. Scalable async APIs."],
-                  "India · @despair0x00", 0.35, 0)
-    identity_tile("stack", "02 // ARCHITECTURE", "FastAPI", "& Python",
-                  ["PostgreSQL, Redis & Docker pipelines.", "High-concurrency async microservices."],
-                  "Async APIs · 99.9% Uptime", 0.45, 1)
-    identity_tile("mindset", "03 // PHILOSOPHY", "Stoic", "Grit",
-                  ["\"Surpassing my limits...\"", "Relentless consistency & stoic focus."],
-                  "Vegeta · Guts (Berserk)", 0.55, 2)
-    whoami()
+    about_me()
     heatmap(data)
     for i, (name, desc, lang, color, meta_tag) in enumerate(REAL_REPOS):
         repo_card(i, name, desc, lang, color, meta_tag)
     section_title("Featured", "repositories", "dark")
     section_title("Featured", "repositories", "light")
-    print("Done rendering all cards with clean vertical spacing!")
+    print("Done rendering all cards!")
