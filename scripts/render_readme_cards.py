@@ -3,8 +3,8 @@
 Render Vansh Kalawatia's profile README cards as animated SVGs into cards/.
 Theme: Monochrome Manga Noir (Johan Liebert / Monster / Berserk psychological aesthetic).
 Cards:
-- hero.svg (With animated ASCII portrait of the Sunglasses Explosion Cat avatar)
-- whoami.svg (Dedicated Who Am I: Identity, Engineering, Anime Mindset)
+- hero.svg (With pure ASCII portrait of the Sunglasses Cat - NO terminal box, just clean floating ASCII)
+- whoami.svg (Dedicated Who Am I: Identity, Engineering, Anime Mindset - 100% valid XML)
 - heatmap.svg (Contribution graph in monochrome ink)
 - title-coding-dark.svg / title-coding-light.svg (Featured Repositories title)
 - repo-Phase-1-First-Real-Tools.svg
@@ -25,7 +25,7 @@ ROOT = os.path.join(HERE, "..")
 DATA = os.path.join(ROOT, "data", "contributions.json")
 OUT = os.path.join(ROOT, "cards")
 FONTS = os.path.join(ROOT, "fonts")
-AVATAR_PATH = os.path.join(ROOT, "assets", "avatar.jpg")
+AVATAR_NOBG = os.path.join(ROOT, "assets", "avatar_nobg_cropped.png")
 
 # Monochrome Manga Noir Palette
 BG_MAIN = "#0d1117"        # Obsidian Dark
@@ -116,84 +116,47 @@ def text_lines(x, y, lines, lh, attrs):
         f'<text x="{x}" y="{y + i * lh}" {attrs}>{escape(l)}</text>' for i, l in enumerate(lines)
     )
 
-# ---- 1 · GENERATE ASCII FROM USER'S AVATAR IMAGE ----
-def generate_hero_cat_ascii():
-    tw, th = 820, 840
-    w_chars, h_chars = 44, 25
-    
-    ascii_rows = []
-    if os.path.exists(AVATAR_PATH):
-        try:
-            im = Image.open(AVATAR_PATH).convert("L")
-            im = ImageEnhance.Contrast(im).enhance(2.0)
-            im = im.resize((w_chars, h_chars), Image.Resampling.LANCZOS)
-            chars = " .:-=+*#%@"
-            pix = list(im.get_flattened_data())
-            for r in range(h_chars):
-                row = "".join(chars[int(pix[r * w_chars + c] / 256 * len(chars))] for c in range(w_chars))
-                ascii_rows.append(row)
-        except Exception as e:
-            print("Avatar error:", e)
+# ---- 1 · GENERATE CLEAN CAT ASCII (NO BACKGROUND, NO TERMINAL) ----
+def get_cat_ascii_lines(target_w=44, target_h=25):
+    if not os.path.exists(AVATAR_NOBG):
+        return []
+    im = Image.open(AVATAR_NOBG)
+    im = im.resize((target_w, target_h), Image.Resampling.LANCZOS)
+    pix = list(im.getdata())
+    chars = " .:-=+*#%@"
+    lines = []
+    for r in range(target_h):
+        line = ""
+        for c in range(target_w):
+            r_val, g_val, b_val, a_val = pix[r * target_w + c]
+            if a_val < 50:
+                line += " "
+            else:
+                gray = int(0.299 * r_val + 0.587 * g_val + 0.114 * b_val)
+                line += chars[int(gray / 256 * len(chars))]
+        lines.append(line)
+    return lines
 
-    rendered_lines = []
-    base_y = 74
-    line_h = 24.5
-
-    for i, line_str in enumerate(ascii_rows):
-        delay = 0.25 + i * 0.02
-        # Use subtle color gradient across the explosion and cat:
-        # Top lines = explosion (#ff9b5e / #e6edf3)
-        # Mid-lower lines = cat with dark shades (#f0f6fc)
-        if i < 7:
-            color = "#f0883e" if i % 2 == 0 else "#e6edf3"
-        elif 13 <= i <= 17:
-            color = "#ffffff"
-        else:
-            color = "#c9d1d9"
-            
-        rendered_lines.append(
-            f'<text class="f" style="animation-delay:{delay:.2f}s" xml:space="preserve" '
-            f'x="38" y="{base_y + i * line_h}" fill="{color}" font-weight="600" '
-            f'font-size="18.5" letter-spacing="1.5">{escape(line_str)}</text>'
-        )
-
-    # Bottom footer badges inside the avatar terminal
-    footer_lines = [
-        (0.85, 735, "[STATUS]   Cool devs don't look at backend explosions.", "#7ee787"),
-        (0.95, 765, "[IDENTITY] Vansh Kalawatia (@despair0x00) · Python Backend", "#58a6ff"),
-        (1.05, 795, "[TARGET]   Summer 2027 Backend Internship", "#f0f6fc"),
-    ]
-    for delay, fy, txt, color in footer_lines:
-        rendered_lines.append(
-            f'<text class="f" style="animation-delay:{delay}s" xml:space="preserve" '
-            f'x="38" y="{fy}" fill="{color}" font-weight="600" font-size="15.5">{escape(txt)}</text>'
-        )
-
-    terminal_body = f"""
-<defs>
-  <linearGradient id="avatar_term_bg" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#161b22"/>
-    <stop offset="1" stop-color="#090d13"/>
-  </linearGradient>
-</defs>
-<rect width="{tw}" height="{th}" rx="18" fill="url(#avatar_term_bg)"/>
-<rect x="1" y="1" width="{tw - 2}" height="{th - 2}" rx="17" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
-<line x1="0" y1="46" x2="{tw}" y2="46" stroke="{BORDER}" stroke-width="1.5"/>
-<circle cx="28" cy="23" r="6.5" fill="#ff5f56"/>
-<circle cx="48" cy="23" r="6.5" fill="#ffbd2e"/>
-<circle cx="68" cy="23" r="6.5" fill="#27c93f"/>
-<text x="{tw / 2}" y="28" fill="{TEXT_MUTED}" font-size="15" font-family="{MONO}" text-anchor="middle">despair0x00@noir: ~/avatar $ ./avatar.sh</text>
-<g font-family="{MONO}">
-{''.join(rendered_lines)}
-</g>
-"""
-    return terminal_body
-
-# ---- 2 · HERO CARD -------------------------------------------------------------
+# ---- 2 · HERO CARD (With Direct Floating ASCII, NO Terminal Window) -------------
 def hero():
     h = 420
-    ascii_portrait_svg = generate_hero_cat_ascii()
-    s = 0.42
+    ascii_rows = get_cat_ascii_lines(42, 26)
+    
+    # Render pure ASCII lines directly floating on the card (like Avi's portrait)
+    ascii_svg_lines = []
+    base_x = 480
+    base_y = 68
+    line_h = 13.5
+    for i, line_str in enumerate(ascii_rows):
+        delay = 0.25 + i * 0.02
+        # Use stark white for the cat fur and sunglasses
+        color = "#ffffff" if (8 <= i <= 17) else "#c9d1d9"
+        ascii_svg_lines.append(
+            f'<text class="f" style="animation-delay:{delay:.2f}s" xml:space="preserve" '
+            f'x="{base_x}" y="{base_y + i * line_h}" fill="{color}" font-family="{MONO}" '
+            f'font-size="12.5" letter-spacing="1.5">{escape(line_str)}</text>'
+        )
+
     body = f"""
 <defs>
   <pattern id="manga_dots" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
@@ -226,14 +189,16 @@ def hero():
   <text x="48" y="396" font-family="{MONO}" font-size="13" fill="{TEXT_MAIN}">linkedin.com/in/vanshkalawatia</text>
   <text class="nu" x="290" y="396" font-family="{MONO}" font-size="13" fill="{ACCENT}">&#8599;</text>
 </g>
-<g transform="translate(506 34) scale({s})" class="f" {d(0.3)}>
-  {ascii_portrait_svg}
+
+<!-- Direct Pure ASCII Portrait (No Terminal Box) -->
+<g class="f" {d(0.2)}>
+{''.join(ascii_svg_lines)}
 </g>
 """
     write("hero.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
                           "Vansh Kalawatia · despair0x00. Python Backend Engineer. Targeting Summer 2027 Internship."))
 
-# ---- 3 · DEDICATED "WHO AM I" CARD (whoami.svg) --------------------------------
+# ---- 3 · DEDICATED "WHO AM I" CARD (100% VALID XML) ---------------------------
 def whoami():
     h = 280
     body = f"""
@@ -264,7 +229,7 @@ def whoami():
   <text x="42" y="164" font-family="{SANS}" font-size="14.5" fill="{TEXT_MAIN}">3rd-year B.Tech CSE undergrad in India targeting a <tspan font-weight="600">Summer 2027</tspan></text>
   <text x="42" y="188" font-family="{SANS}" font-size="14.5" fill="{TEXT_MAIN}">Python Backend Engineering Internship.</text>
   <text x="42" y="222" font-family="{MONO}" font-size="12" fill="{TEXT_MUTED}">STACK : <tspan fill="{TEXT_SILVER}">Python 3.12 · FastAPI · PostgreSQL · Redis · Docker · Linux</tspan></text>
-  <text x="42" y="244" font-family="{MONO}" font-size="12" fill="{TEXT_MUTED}">ALIAS : <tspan fill="{TEXT_MAIN}">vanshkalawatia</tspan> &nbsp;·&nbsp; SIDE QUEST: <tspan fill="{TEXT_MAIN}">@despair0x00</tspan></text>
+  <text x="42" y="244" font-family="{MONO}" font-size="12" fill="{TEXT_MUTED}">ALIAS : <tspan fill="{TEXT_MAIN}">vanshkalawatia</tspan> &#160;·&#160; SIDE QUEST: <tspan fill="{TEXT_MAIN}">@despair0x00</tspan></text>
 </g>
 
 <!-- Center Vertical Separator -->
@@ -384,4 +349,4 @@ if __name__ == "__main__":
         repo_card(i, name, desc, lang, color, meta_tag)
     section_title("Featured", "repositories", "dark")
     section_title("Featured", "repositories", "light")
-    print("Done rendering all profile cards with cat ASCII avatar!")
+    print("Done rendering all cards!")
