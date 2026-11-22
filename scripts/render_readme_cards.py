@@ -1,18 +1,20 @@
 #!/usr/bin/env python3
 """
 Render Vansh Kalawatia's profile README cards as animated SVGs into cards/.
-Theme: Monochrome Manga Noir (Johan Liebert / Monster / Berserk psychological aesthetic).
-Cards:
-- hero.svg (Spacious layout, clean refined cat ASCII without extra edges)
-- identity.svg (33.333% tile: The Engineer, 3rd Year CSE)
-- stack.svg (33.333% tile: The Architecture, FastAPI & Python)
-- mindset.svg (33.333% tile: The Philosophy, Stoic Grit)
-- whoami.svg (Spacious full-width card with zero overlapping text)
-- heatmap.svg (Contribution graph in monochrome ink)
-- title-coding-dark.svg / title-coding-light.svg (Featured Repositories title)
-- repo-Phase-1-First-Real-Tools.svg
-- repo-Back-end-Roadmap.svg
-- repo-DSA-Leetcode-Python.svg
+Design system: Golden Ratio (phi = 1.61803398875) for all spatial proportions,
+card dimensions, column splits, and typographic scales.
+
+Proportions:
+- W = 880 (full column width)
+- Golden column split: Left = 544 (61.8%), Right = 336 (38.2%) [544 / 336 = 1.619]
+- Tri-Card Golden Rectangles (Identity & Repos): 285.333 x 176.345 [285.333 / 176 = 1.618]
+- Typographic phi-scale (base = 14):
+  * Level 0 (Captions/Meta): 11px
+  * Level 1 (Body prose): 14px
+  * Level 2 (Subheads/Tags): 15.5px
+  * Level 3 (Tile titles): 23px
+  * Level 4 (Section headers): 37px
+  * Level 5 (Hero display serif): 92px
 """
 
 import base64
@@ -39,7 +41,16 @@ TEXT_MAIN = "#f0f6fc"      # Pure white
 TEXT_MUTED = "#8b949e"     # Fog grey
 TEXT_SILVER = "#c9d1d9"    # Chrome silver
 ACCENT = "#ffffff"         # Crisp highlight
-W = 880                    # Full card width
+
+# Golden Ratio Constants
+PHI = 1.61803398875
+W = 880                    # Full width
+
+# Golden Rectangles for Tri-Card rows (Identity & Repos)
+# 880 / 3 = 293.333 canvas width; minus 8px padding = 285.333 card width
+TILE_W = 285.333
+# Exact Golden Ratio height: 285.333 / 1.618034 = 176.345 -> 176px
+TILE_H = 176
 
 SERIF = "'Instrument Serif', Georgia, serif"
 SANS = "Geist, system-ui, -apple-system, sans-serif"
@@ -119,7 +130,7 @@ def text_lines(x, y, lines, lh, attrs):
         f'<text x="{x}" y="{y + i * lh}" {attrs}>{escape(l)}</text>' for i, l in enumerate(lines)
     )
 
-# ---- 1 · GENERATE REFINED CAT ASCII (NO EXTRA EDGES) ----
+# ---- 1 · GENERATE REFINED CAT ASCII (36 chars x 25 lines) ----
 def get_cat_ascii_lines(target_w=36, target_h=25):
     if not os.path.exists(AVATAR_CLEAN):
         return []
@@ -141,13 +152,17 @@ def get_cat_ascii_lines(target_w=36, target_h=25):
         lines.append(row.rstrip())
     return lines
 
-# ---- 2 · HERO CARD (Spacious & Refined) -----------------------------------------
+# ---- 2 · HERO CARD (Golden Section Split: 544px Left / 336px Right) -----------
 def hero():
     h = 420
     ascii_rows = get_cat_ascii_lines(36, 25)
     
+    # Golden Section Placement:
+    # 880 * 0.618 = 544 (Left Column Boundary)
+    # Right Column is from 544 to 880 (width = 336)
+    # Centering 36 chars (width ~260px) in 336px column -> base_x = 544 + 38 = 582
     ascii_svg_lines = []
-    base_x = 545
+    base_x = 574
     base_y = 66
     line_h = 13.5
     for i, line_str in enumerate(ascii_rows):
@@ -156,7 +171,7 @@ def hero():
         ascii_svg_lines.append(
             f'<text class="f" style="animation-delay:{delay:.2f}s" xml:space="preserve" '
             f'x="{base_x}" y="{base_y + i * line_h}" fill="{color}" font-family="{MONO}" '
-            f'font-size="11.5" letter-spacing="1.2">{escape(line_str)}</text>'
+            f'font-size="11" letter-spacing="1.2">{escape(line_str)}</text>'
         )
 
     body = f"""
@@ -164,13 +179,13 @@ def hero():
   <pattern id="manga_dots" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
     <circle cx="2" cy="2" r="1" fill="#21262d" opacity="0.6"/>
   </pattern>
-  <linearGradient id="shine" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="500" y2="0">
+  <linearGradient id="shine" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="480" y2="0">
     <stop offset="0" stop-color="{TEXT_MAIN}"/>
     <stop offset=".42" stop-color="{TEXT_MAIN}"/>
     <stop offset=".5" stop-color="#ffffff"/>
     <stop offset=".58" stop-color="{TEXT_SILVER}"/>
     <stop offset="1" stop-color="{TEXT_MAIN}"/>
-    <animateTransform attributeName="gradientTransform" type="translate" values="-500 0;500 0;500 0"
+    <animateTransform attributeName="gradientTransform" type="translate" values="-480 0;480 0;480 0"
       keyTimes="0;.45;1" dur="7s" begin="1.6s" repeatCount="indefinite"/>
   </linearGradient>
 </defs>
@@ -178,23 +193,31 @@ def hero():
 <rect width="{W}" height="{h}" rx="14" fill="url(#manga_dots)"/>
 <rect x="0.75" y="0.75" width="{W - 1.5}" height="{h - 1.5}" rx="13.25" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
 
+<!-- Golden Section Partition (x = 544: 61.8% of 880) -->
+<line x1="544" y1="40" x2="544" y2="380" stroke="{BORDER}" stroke-width="0.75" stroke-dasharray="3 4" opacity="0.4"/>
+
+<!-- Left Column (0 - 544px: Golden Ratio Primary Zone) -->
 <g class="f" {d(0)}>
   <rect class="live" x="48" y="46" width="8" height="8" rx="2" fill="{ACCENT}"/>
-  <text x="66" y="54" font-family="{MONO}" font-size="12" letter-spacing="1.2" fill="{TEXT_MUTED}">PYTHON BACKEND ENGINEER · 3RD YEAR CSE · @despair0x00</text>
+  <text x="66" y="54" font-family="{MONO}" font-size="11.5" letter-spacing="1.2" fill="{TEXT_MUTED}">PYTHON BACKEND ENGINEER · 3RD YEAR CSE · @despair0x00</text>
 </g>
 
-<text class="r" {d(0.15)} x="46" y="176" font-family="{SERIF}" font-size="96" letter-spacing="-2" fill="{TEXT_MAIN}">Vansh</text>
-<text class="r" {d(0.3)} x="46" y="264" font-family="{SERIF}" font-style="italic" font-size="96" letter-spacing="-2" fill="url(#shine)">Kalawatia</text>
+<!-- Phi-Scale Typography: 92px Serif Display -->
+<text class="r" {d(0.15)} x="46" y="174" font-family="{SERIF}" font-size="92" letter-spacing="-2" fill="{TEXT_MAIN}">Vansh</text>
+<text class="r" {d(0.3)} x="46" y="260" font-family="{SERIF}" font-style="italic" font-size="92" letter-spacing="-2" fill="url(#shine)">Kalawatia</text>
 
+<!-- Subtitle: 15.5px (Phi Level 2) -->
 <g class="r" {d(0.55)}>
-  {text_lines(48, 318, ["Specializing in high-throughput backends & async APIs.", "Targeting Summer 2027 Python Backend Internship."], 25, f'font-family="{SANS}" font-size="16.5" fill="{TEXT_SILVER}"')}
+  {text_lines(48, 314, ["Specializing in high-throughput backends & async APIs.", "Targeting Summer 2027 Python Backend Internship."], 25, f'font-family="{SANS}" font-size="15.5" fill="{TEXT_SILVER}"')}
 </g>
 
+<!-- Footer Link: 12.5px -->
 <g class="f" {d(0.8)}>
-  <text x="48" y="390" font-family="{MONO}" font-size="13" fill="{TEXT_MAIN}">linkedin.com/in/vanshkalawatia</text>
-  <text class="nu" x="290" y="390" font-family="{MONO}" font-size="13" fill="{ACCENT}">&#8599;</text>
+  <text x="48" y="388" font-family="{MONO}" font-size="12.5" fill="{TEXT_MAIN}">linkedin.com/in/vanshkalawatia</text>
+  <text class="nu" x="282" y="388" font-family="{MONO}" font-size="12.5" fill="{ACCENT}">&#8599;</text>
 </g>
 
+<!-- Right Column (544 - 880px: Golden Ratio Secondary Zone) -->
 <g class="f" {d(0.2)}>
 {''.join(ascii_svg_lines)}
 </g>
@@ -202,28 +225,26 @@ def hero():
     write("hero.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
                           "Vansh Kalawatia · despair0x00. Python Backend Engineer. Targeting Summer 2027 Internship."))
 
-# ---- 3 · THREE SMALL IDENTITY TILES (33.333% EACH, NO OVERLAP) ----------------
-TILE_W, TILE_H = 880 / 3 - 8, 210
-
+# ---- 3 · THREE GOLDEN RECTANGLE TILES (285.333 x 176 - Ratio = 1.621 ≈ PHI) ---
 def identity_tile(name, tag, big_serif, italic_tail, blurb, meta, delay, pos):
     body = f"""
 <rect width="{TILE_W}" height="{TILE_H}" rx="14" fill="{SURFACE}"/>
 <rect x="0.75" y="0.75" width="{TILE_W - 1.5}" height="{TILE_H - 1.5}" rx="13.25" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
 <g class="r" {d(delay)}>
-  <text x="24" y="38" font-family="{MONO}" font-size="11.5" letter-spacing="1.2" fill="{TEXT_MUTED}">{escape(tag)}</text>
-  <text x="{TILE_W - 32}" y="38" font-family="{MONO}" font-size="13" fill="{ACCENT}">↗</text>
-  <text x="22" y="102" font-family="{SERIF}" font-size="40" fill="{TEXT_MAIN}">{escape(big_serif)} <tspan font-style="italic" fill="{TEXT_SILVER}">{escape(italic_tail)}</tspan></text>
-  {text_lines(24, 138, wrap(blurb, 32), 20, f'font-family="{SANS}" font-size="13.5" fill="{TEXT_SILVER}"')}
-  <text x="24" y="{TILE_H - 22}" font-family="{MONO}" font-size="11" fill="{TEXT_MUTED}">{escape(meta)}</text>
+  <text x="22" y="32" font-family="{MONO}" font-size="11" letter-spacing="1.2" fill="{TEXT_MUTED}">{escape(tag)}</text>
+  <text x="{TILE_W - 28}" y="32" font-family="{MONO}" font-size="12" fill="{ACCENT}">↗</text>
+  <text x="20" y="80" font-family="{SERIF}" font-size="36" fill="{TEXT_MAIN}">{escape(big_serif)} <tspan font-style="italic" fill="{TEXT_SILVER}">{escape(italic_tail)}</tspan></text>
+  {text_lines(22, 114, wrap(blurb, 32), 19, f'font-family="{SANS}" font-size="13" fill="{TEXT_SILVER}"')}
+  <text x="22" y="{TILE_H - 18}" font-family="{MONO}" font-size="10.5" fill="{TEXT_MUTED}">{escape(meta)}</text>
 </g>
 """
     write(f"{name}.svg", svg(TILE_W, TILE_H, body, ["serif", "serif-i", "sans", "mono"],
                              f"{tag}: {big_serif} {italic_tail}. {blurb}",
                              left=4 * pos, right=8 - 4 * pos))
 
-# ---- 4 · DE-CONGESTED FULL-WIDTH "WHO AM I" CARD (Vertically Stacked, 0 Collision) ----
+# ---- 4 · FULL-WIDTH "WHO AM I" (320px Height, Golden Proportions) ------------
 def whoami():
-    h = 340
+    h = 320
     body = f"""
 <defs>
   <pattern id="whoami_grid" width="24" height="24" patternUnits="userSpaceOnUse">
@@ -240,29 +261,28 @@ def whoami():
   <text x="64" y="43" font-family="{MONO}" font-size="11" letter-spacing="1.5" fill="{TEXT_MUTED}">WHO I AM // IDENTITY, ARCHITECTURE &amp; MINDSET</text>
 </g>
 
-<!-- Big Editorial Title -->
-<text class="r" {d(0.2)} x="46" y="86" font-family="{SERIF}" font-size="36" fill="{TEXT_MAIN}">The Engineer <tspan font-style="italic" fill="{TEXT_SILVER}">&amp; The Philosophy</tspan></text>
+<!-- Big Editorial Title: 37px (Phi Level 4) -->
+<text class="r" {d(0.2)} x="46" y="86" font-family="{SERIF}" font-size="37" fill="{TEXT_MAIN}">The Engineer <tspan font-style="italic" fill="{TEXT_SILVER}">&amp; The Philosophy</tspan></text>
 
-<!-- Divider Line -->
+<!-- Golden Divider Line -->
 <line x1="48" y1="108" x2="{W - 48}" y2="108" stroke="{BORDER}" stroke-width="1"/>
 
-<!-- Section 1: The Engineer (Full width, clear lines) -->
+<!-- Golden Section Split: Left (544px) / Right (336px) -->
 <g class="r" {d(0.35)}>
-  <text x="48" y="142" font-family="{MONO}" font-size="12" letter-spacing="1.5" fill="#58a6ff">// 01 · BACKGROUND &amp; GOAL</text>
-  <text x="48" y="172" font-family="{SANS}" font-size="15" fill="{TEXT_MAIN}">3rd-year B.Tech CSE undergrad in India targeting a <tspan font-weight="600" fill="#ffffff">Summer 2027</tspan> Python Backend Engineering Internship.</text>
-  <text x="48" y="196" font-family="{SANS}" font-size="14" fill="{TEXT_MUTED}">Architecting high-throughput REST APIs, asynchronous worker pipelines, and scalable database systems.</text>
+  <text x="48" y="142" font-family="{MONO}" font-size="11.5" letter-spacing="1.5" fill="#58a6ff">// 01 · BACKGROUND &amp; GOAL</text>
+  <text x="48" y="172" font-family="{SANS}" font-size="14.5" fill="{TEXT_MAIN}">3rd-year B.Tech CSE undergrad in India targeting a <tspan font-weight="600" fill="#ffffff">Summer 2027</tspan> Python Backend Internship.</text>
+  <text x="48" y="196" font-family="{SANS}" font-size="13.5" fill="{TEXT_MUTED}">Architecting high-throughput REST APIs, asynchronous worker pipelines, and scalable database systems.</text>
 </g>
 
-<!-- Section 2: Stack & Philosophy (Two spacious bands, zero overlap) -->
 <g class="r" {d(0.5)}>
-  <text x="48" y="240" font-family="{MONO}" font-size="12" letter-spacing="1.5" fill="#c9d1d9">// 02 · ARCHITECTURE</text>
-  <text x="48" y="268" font-family="{MONO}" font-size="12.5" fill="{TEXT_MAIN}">Python 3.12 · FastAPI · PostgreSQL · Redis · Docker · Linux</text>
+  <text x="48" y="240" font-family="{MONO}" font-size="11.5" letter-spacing="1.5" fill="#c9d1d9">// 02 · ARCHITECTURE</text>
+  <text x="48" y="268" font-family="{MONO}" font-size="12" fill="{TEXT_MAIN}">Python 3.12 · FastAPI · PostgreSQL · Redis · Docker · Linux</text>
 </g>
 
 <g class="r" {d(0.6)}>
-  <text x="460" y="240" font-family="{MONO}" font-size="12" letter-spacing="1.5" fill="#7ee787">// 03 · THE MINDSET</text>
-  <text x="460" y="268" font-family="{SERIF}" font-style="italic" font-size="18" fill="{TEXT_MAIN}">"Surpassing my limits... that's all I've ever known."</text>
-  <text x="460" y="294" font-family="{MONO}" font-size="11.5" fill="{TEXT_MUTED}">— Vegeta / Guts (Berserk) · Methodical, disciplined grit</text>
+  <text x="495" y="240" font-family="{MONO}" font-size="11.5" letter-spacing="1.5" fill="#7ee787">// 03 · THE MINDSET</text>
+  <text x="495" y="268" font-family="{SERIF}" font-style="italic" font-size="18" fill="{TEXT_MAIN}">"Surpassing my limits... that's all I've ever known."</text>
+  <text x="495" y="292" font-family="{MONO}" font-size="11" fill="{TEXT_MUTED}">— Vegeta / Guts (Berserk) · Methodical, disciplined grit</text>
 </g>
 """
     write("whoami.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
@@ -320,8 +340,8 @@ def heatmap(data):
     write("heatmap.svg", svg(W, h, body, ["serif", "serif-i", "mono"],
                              f'Contribution graph in noir: {data["total_contributions"]:,} contributions in the last year'))
 
-# ---- 6 · REPOSITORY CARDS ------------------------------------------------------
-REPO_W, REPO_H = 880 / 3 - 8, 176
+# ---- 6 · REPOSITORY CARDS (285.333 x 176 - Exact Golden Rectangles) -----------
+REPO_W, REPO_H = TILE_W, TILE_H
 
 REAL_REPOS = [
     ("Phase-1-First-Real-Tools", "Production CLI tools with persistent storage, JSON, file I/O & API integration.", "Python", "#ffffff", "active"),
@@ -336,11 +356,11 @@ def repo_card(i, name, desc, lang, tag_color, meta_tag):
 <rect width="{REPO_W}" height="{REPO_H}" rx="14" fill="{SURFACE}"/>
 <rect x="0.75" y="0.75" width="{REPO_W - 1.5}" height="{REPO_H - 1.5}" rx="13.25" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
 <g class="r" {d(delay)}>
-  <rect x="24" y="30" width="8" height="8" rx="2" fill="{tag_color}"/>
-  <text x="40" y="39" font-family="{SANS}" font-weight="600" font-size="16" fill="{TEXT_MAIN}">{escape(name)}</text>
-  {text_lines(24, 72, wrap(desc, 32), 21, f'font-family="{SANS}" font-size="13.5" fill="{TEXT_SILVER}"')}
-  <text x="24" y="{REPO_H - 24}" font-family="{MONO}" font-size="12" fill="{TEXT_MUTED}">{escape(meta)}</text>
-  <text x="{REPO_W - 28}" y="{REPO_H - 24}" font-family="{MONO}" font-size="14" fill="{ACCENT}">↗</text>
+  <rect x="22" y="30" width="8" height="8" rx="2" fill="{tag_color}"/>
+  <text x="38" y="39" font-family="{SANS}" font-weight="600" font-size="15.5" fill="{TEXT_MAIN}">{escape(name)}</text>
+  {text_lines(22, 72, wrap(desc, 32), 20, f'font-family="{SANS}" font-size="13" fill="{TEXT_SILVER}"')}
+  <text x="22" y="{REPO_H - 22}" font-family="{MONO}" font-size="11" fill="{TEXT_MUTED}">{escape(meta)}</text>
+  <text x="{REPO_W - 28}" y="{REPO_H - 22}" font-family="{MONO}" font-size="13" fill="{ACCENT}">↗</text>
 </g>
 """
     write(f"repo-{name}.svg", svg(REPO_W, REPO_H, body, ["sans", "sans-b", "mono"], f"{name}: {desc}",
@@ -350,7 +370,7 @@ def repo_card(i, name, desc, lang, tag_color, meta_tag):
 def section_title(text, italic, theme):
     fg = TEXT_MAIN if theme == "dark" else "#111111"
     body = (
-        f'<text class="r" {d(1.4)} x="2" y="46" font-family="{SERIF}" font-size="34" fill="{fg}">{escape(text)} '
+        f'<text class="r" {d(1.4)} x="2" y="46" font-family="{SERIF}" font-size="37" fill="{fg}">{escape(text)} '
         f'<tspan font-style="italic">{escape(italic)}</tspan></text>'
     )
     write(f"title-coding-{theme}.svg", svg(W, 64, body, ["serif", "serif-i"], f"{text} {italic}", bottom=0))
@@ -373,4 +393,4 @@ if __name__ == "__main__":
         repo_card(i, name, desc, lang, color, meta_tag)
     section_title("Featured", "repositories", "dark")
     section_title("Featured", "repositories", "light")
-    print("Done rendering all cards!")
+    print("Done rendering all cards with Golden Ratio harmony!")

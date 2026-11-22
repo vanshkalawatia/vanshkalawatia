@@ -11,13 +11,13 @@
 .nu{transform-box:fill-box;animation:nudgeup 1.8s ease-in-out infinite}
 @media (prefers-reduced-motion: reduce){.r,.f,.p,.live,.nu{animation:none!important;opacity:1!important;transform:none!important}}
 </style><g transform="translate(8.000 0)">
-<rect width="285.3333333333333" height="176" rx="14" fill="#161b22"/>
-<rect x="0.75" y="0.75" width="283.8333333333333" height="174.5" rx="13.25" fill="none" stroke="#30363d" stroke-width="1.5"/>
+<rect width="285.333" height="176" rx="14" fill="#161b22"/>
+<rect x="0.75" y="0.75" width="283.833" height="174.5" rx="13.25" fill="none" stroke="#30363d" stroke-width="1.5"/>
 <g class="r" style="animation-delay:1.84s">
-  <rect x="24" y="30" width="8" height="8" rx="2" fill="#8b949e"/>
-  <text x="40" y="39" font-family="Geist, system-ui, -apple-system, sans-serif" font-weight="600" font-size="16" fill="#f0f6fc">DSA-Leetcode-Python</text>
-  <text x="24" y="72" font-family="Geist, system-ui, -apple-system, sans-serif" font-size="13.5" fill="#c9d1d9">Algorithmic mastery, data</text><text x="24" y="93" font-family="Geist, system-ui, -apple-system, sans-serif" font-size="13.5" fill="#c9d1d9">structures &amp; daily LeetCode</text><text x="24" y="114" font-family="Geist, system-ui, -apple-system, sans-serif" font-size="13.5" fill="#c9d1d9">interview patterns.</text>
-  <text x="24" y="152" font-family="'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12" fill="#8b949e">Python  ·  active</text>
-  <text x="257.3333333333333" y="152" font-family="'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="14" fill="#ffffff">↗</text>
+  <rect x="22" y="30" width="8" height="8" rx="2" fill="#8b949e"/>
+  <text x="38" y="39" font-family="Geist, system-ui, -apple-system, sans-serif" font-weight="600" font-size="15.5" fill="#f0f6fc">DSA-Leetcode-Python</text>
+  <text x="22" y="72" font-family="Geist, system-ui, -apple-system, sans-serif" font-size="13" fill="#c9d1d9">Algorithmic mastery, data</text><text x="22" y="92" font-family="Geist, system-ui, -apple-system, sans-serif" font-size="13" fill="#c9d1d9">structures &amp; daily LeetCode</text><text x="22" y="112" font-family="Geist, system-ui, -apple-system, sans-serif" font-size="13" fill="#c9d1d9">interview patterns.</text>
+  <text x="22" y="154" font-family="'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" fill="#8b949e">Python  ·  active</text>
+  <text x="257.333" y="154" font-family="'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13" fill="#ffffff">↗</text>
 </g>
 </g></svg>
