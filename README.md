@@ -4,7 +4,7 @@
 </p>
 
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=16&duration=3000&pause=1500&color=8B5CF6&center=true&vCenter=true&width=580&lines=%22Surpassing+my+limits...+that's+all+I've+ever+known.%22+—+Vegeta;%22The+world+is+not+beautiful,+therefore+it+is.%22+—+Kino;%22If+you+don't+like+your+destiny,+don't+accept+it.%22+—+Naruto;%22Fear+is+not+evil.+It+tells+you+what+your+weakness+is.%22+—+Gildarts;%22I+alone+am+the+honored+one.%22+—+Gojo" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=16&duration=3000&pause=1500&color=8B5CF6&center=true&vCenter=true&width=620&lines=Surpassing+my+limits...+that+is+all+I+have+ever+known.+-+Vegeta;Admiration+is+the+furthest+state+from+understanding.+-+Aizen;The+only+thing+humans+are+equal+in+is+death.+-+Johan+Liebert;In+the+end+the+winner+is+the+last+man+standing.+-+Guts" alt="Typing SVG" />
 </p>
 
 <br/>
@@ -41,9 +41,9 @@ class Vansh:
 <td width="45%" align="center">
   <img src="https://user-images.githubusercontent.com/74038190/212257465-7ce8d493-cac5-494e-982a-5a9deb852c4b.gif" width="280"/>
   <br/><br/>
-  <sub><i>"A lesson without pain is meaningless."</i></sub>
+  <sub><i>"Even if we painstakingly piece together what was lost, it doesn't mean things will return to how they were."</i></sub>
   <br/>
-  <sub>— Edward Elric</sub>
+  <sub>— Guts</sub>
 </td>
 </tr>
 </table>
@@ -151,5 +151,5 @@ class Vansh:
 </p>
 
 <p align="center">
-  <sub><i>"If you don't take risks, you can't create a future."</i> — Monkey D. Luffy</sub>
+  <sub><i>"The only thing humans are truly equal in is death."</i> — Johan Liebert</sub>
 </p>
