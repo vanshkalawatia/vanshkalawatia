@@ -3,7 +3,7 @@
 Render Vansh Kalawatia's profile README cards as animated SVGs into cards/.
 Theme: Monochrome Manga Noir (Johan Liebert / Monster / Berserk psychological aesthetic).
 Cards:
-- hero.svg (With pure ASCII portrait of the Sunglasses Cat - NO terminal box, floating cleanly)
+- hero.svg (Spacious layout, clean refined cat ASCII without extra edges, 100px breathing room)
 - whoami.svg (Spacious, un-congested editorial card: Identity, Engineering, Anime Mindset)
 - heatmap.svg (Contribution graph in monochrome ink)
 - title-coding-dark.svg / title-coding-light.svg (Featured Repositories title)
@@ -25,7 +25,7 @@ ROOT = os.path.join(HERE, "..")
 DATA = os.path.join(ROOT, "data", "contributions.json")
 OUT = os.path.join(ROOT, "cards")
 FONTS = os.path.join(ROOT, "fonts")
-AVATAR_NOBG = os.path.join(ROOT, "assets", "avatar_nobg_cropped.png")
+AVATAR_CLEAN = os.path.join(ROOT, "assets", "avatar_clean.png")
 
 # Monochrome Manga Noir Palette
 BG_MAIN = "#0d1117"        # Obsidian Dark
@@ -116,43 +116,45 @@ def text_lines(x, y, lines, lh, attrs):
         f'<text x="{x}" y="{y + i * lh}" {attrs}>{escape(l)}</text>' for i, l in enumerate(lines)
     )
 
-# ---- 1 · GENERATE CLEAN CAT ASCII FROM USER PNG ----
-def get_cat_ascii_lines(target_w=42, target_h=26):
-    if not os.path.exists(AVATAR_NOBG):
+# ---- 1 · GENERATE REFINED CAT ASCII (NO EXTRA EDGES) ----
+def get_cat_ascii_lines(target_w=36, target_h=25):
+    if not os.path.exists(AVATAR_CLEAN):
         return []
-    im = Image.open(AVATAR_NOBG)
-    im = im.resize((target_w, target_h), Image.Resampling.LANCZOS)
-    pix = list(im.getdata())
-    chars = " .:-=+*#%@"
+    im = Image.open(AVATAR_CLEAN)
+    resized = im.resize((target_w, target_h), Image.Resampling.LANCZOS)
+    pix = list(resized.getdata())
+    chars = "   ..::--==++**##%%@@"
     lines = []
     for r in range(target_h):
-        line = ""
+        row = ""
         for c in range(target_w):
             r_val, g_val, b_val, a_val = pix[r * target_w + c]
-            if a_val < 60:
-                line += " "
+            if a_val < 100:
+                row += " "
             else:
                 gray = int(0.299 * r_val + 0.587 * g_val + 0.114 * b_val)
-                line += chars[int(gray / 256 * len(chars))]
-        lines.append(line)
+                idx = int((gray / 255.0) ** 0.85 * (len(chars) - 1))
+                row += chars[idx]
+        lines.append(row.rstrip())
     return lines
 
-# ---- 2 · HERO CARD (With Direct Floating ASCII, NO Terminal Box) -------------
+# ---- 2 · HERO CARD (Spacious & Refined) -----------------------------------------
 def hero():
     h = 420
-    ascii_rows = get_cat_ascii_lines(42, 26)
+    ascii_rows = get_cat_ascii_lines(36, 25)
     
+    # Place ASCII comfortably on the right with a generous 100px buffer
     ascii_svg_lines = []
-    base_x = 485
-    base_y = 60
-    line_h = 13.6
+    base_x = 545
+    base_y = 66
+    line_h = 13.5
     for i, line_str in enumerate(ascii_rows):
         delay = 0.25 + i * 0.02
-        color = "#ffffff" if (6 <= i <= 17) else "#c9d1d9"
+        color = "#ffffff" if (5 <= i <= 16) else "#c9d1d9"
         ascii_svg_lines.append(
             f'<text class="f" style="animation-delay:{delay:.2f}s" xml:space="preserve" '
             f'x="{base_x}" y="{base_y + i * line_h}" fill="{color}" font-family="{MONO}" '
-            f'font-size="12.5" letter-spacing="1.5">{escape(line_str)}</text>'
+            f'font-size="11.5" letter-spacing="1.2">{escape(line_str)}</text>'
         )
 
     body = f"""
@@ -160,13 +162,13 @@ def hero():
   <pattern id="manga_dots" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
     <circle cx="2" cy="2" r="1" fill="#21262d" opacity="0.6"/>
   </pattern>
-  <linearGradient id="shine" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="600" y2="0">
+  <linearGradient id="shine" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="500" y2="0">
     <stop offset="0" stop-color="{TEXT_MAIN}"/>
     <stop offset=".42" stop-color="{TEXT_MAIN}"/>
     <stop offset=".5" stop-color="#ffffff"/>
     <stop offset=".58" stop-color="{TEXT_SILVER}"/>
     <stop offset="1" stop-color="{TEXT_MAIN}"/>
-    <animateTransform attributeName="gradientTransform" type="translate" values="-600 0;600 0;600 0"
+    <animateTransform attributeName="gradientTransform" type="translate" values="-500 0;500 0;500 0"
       keyTimes="0;.45;1" dur="7s" begin="1.6s" repeatCount="indefinite"/>
   </linearGradient>
 </defs>
@@ -174,21 +176,28 @@ def hero():
 <rect width="{W}" height="{h}" rx="14" fill="url(#manga_dots)"/>
 <rect x="0.75" y="0.75" width="{W - 1.5}" height="{h - 1.5}" rx="13.25" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
 
+<!-- Header indicator -->
 <g class="f" {d(0)}>
-  <rect class="live" x="48" y="49" width="8" height="8" rx="2" fill="{ACCENT}"/>
-  <text x="66" y="57" font-family="{MONO}" font-size="12" letter-spacing="1.2" fill="{TEXT_MUTED}">PYTHON BACKEND ENGINEER · 3RD YEAR CSE · @despair0x00</text>
-</g>
-<text class="r" {d(0.15)} x="44" y="186" font-family="{SERIF}" font-size="110" letter-spacing="-2.5" fill="{TEXT_MAIN}">Vansh</text>
-<text class="r" {d(0.3)} x="44" y="282" font-family="{SERIF}" font-style="italic" font-size="110" letter-spacing="-2.5" fill="url(#shine)">Kalawatia</text>
-<g class="r" {d(0.55)}>
-  {text_lines(48, 332, ["Specializing in high-throughput backends & async APIs.", "Targeting Summer 2027 Python Backend Internship."], 26, f'font-family="{SANS}" font-size="17" fill="{TEXT_SILVER}"')}
-</g>
-<g class="f" {d(0.8)}>
-  <text x="48" y="396" font-family="{MONO}" font-size="13" fill="{TEXT_MAIN}">linkedin.com/in/vanshkalawatia</text>
-  <text class="nu" x="290" y="396" font-family="{MONO}" font-size="13" fill="{ACCENT}">&#8599;</text>
+  <rect class="live" x="48" y="46" width="8" height="8" rx="2" fill="{ACCENT}"/>
+  <text x="66" y="54" font-family="{MONO}" font-size="12" letter-spacing="1.2" fill="{TEXT_MUTED}">PYTHON BACKEND ENGINEER · 3RD YEAR CSE · @despair0x00</text>
 </g>
 
-<!-- Direct Pure ASCII Portrait (No Terminal Box) -->
+<!-- Big Editorial Serif Name (Balanced 96px, zero overlap with right column) -->
+<text class="r" {d(0.15)} x="46" y="176" font-family="{SERIF}" font-size="96" letter-spacing="-2" fill="{TEXT_MAIN}">Vansh</text>
+<text class="r" {d(0.3)} x="46" y="264" font-family="{SERIF}" font-style="italic" font-size="96" letter-spacing="-2" fill="url(#shine)">Kalawatia</text>
+
+<!-- Subtitle -->
+<g class="r" {d(0.55)}>
+  {text_lines(48, 318, ["Specializing in high-throughput backends & async APIs.", "Targeting Summer 2027 Python Backend Internship."], 25, f'font-family="{SANS}" font-size="16.5" fill="{TEXT_SILVER}"')}
+</g>
+
+<!-- Footer link -->
+<g class="f" {d(0.8)}>
+  <text x="48" y="390" font-family="{MONO}" font-size="13" fill="{TEXT_MAIN}">linkedin.com/in/vanshkalawatia</text>
+  <text class="nu" x="290" y="390" font-family="{MONO}" font-size="13" fill="{ACCENT}">&#8599;</text>
+</g>
+
+<!-- Refined Floating ASCII Portrait (36 chars, zero clutter) -->
 <g class="f" {d(0.2)}>
 {''.join(ascii_svg_lines)}
 </g>
@@ -198,7 +207,7 @@ def hero():
 
 # ---- 3 · SPACIOUS, UN-CONGESTED "WHO AM I" CARD (whoami.svg) -------------------
 def whoami():
-    h = 320  # Expanded height so all content breathes comfortably
+    h = 320
     body = f"""
 <defs>
   <pattern id="whoami_grid" width="24" height="24" patternUnits="userSpaceOnUse">
@@ -221,7 +230,7 @@ def whoami():
 <!-- Divider Line -->
 <line x1="48" y1="116" x2="{W - 48}" y2="116" stroke="{BORDER}" stroke-width="1"/>
 
-<!-- Left Column: The Engineer (Clean, wide, spacious) -->
+<!-- Left Column: The Engineer (Spacious & breathable) -->
 <g class="r" {d(0.4)}>
   <text x="48" y="150" font-family="{MONO}" font-size="12" letter-spacing="1.5" fill="#58a6ff">// BACKEND ENGINEERING</text>
   <text x="48" y="184" font-family="{SANS}" font-size="15.5" fill="{TEXT_MAIN}">3rd-year B.Tech CSE student in India, targeting a <tspan font-weight="600" fill="#ffffff">Summer 2027</tspan></text>
@@ -230,7 +239,7 @@ def whoami():
   <text x="48" y="282" font-family="{MONO}" font-size="12" fill="{TEXT_SILVER}">STACK : <tspan fill="{TEXT_MAIN}">Python 3.12 · FastAPI · PostgreSQL · Redis · Docker · Linux</tspan></text>
 </g>
 
-<!-- Right Column: The Philosophy & Anime Taste (Relaxed & elegant) -->
+<!-- Right Column: The Philosophy & Anime Taste (Spacious & breathable) -->
 <g class="r" {d(0.55)}>
   <text x="495" y="150" font-family="{MONO}" font-size="12" letter-spacing="1.5" fill="#7ee787">// STOIC MINDSET &amp; ANIME</text>
   <text x="495" y="188" font-family="{SERIF}" font-style="italic" font-size="22" fill="{TEXT_MAIN}">"Surpassing my limits... that's all I've ever known."</text>
