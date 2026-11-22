@@ -18,7 +18,7 @@ import json
 import os
 import re
 from html import escape
-from PIL import Image
+from PIL import Image, ImageEnhance
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, "..")
@@ -116,57 +116,49 @@ def text_lines(x, y, lines, lh, attrs):
         f'<text x="{x}" y="{y + i * lh}" {attrs}>{escape(l)}</text>' for i, l in enumerate(lines)
     )
 
-# ---- 1 · GENERATE CHROMATIC MULTI-COLOR ASCII FOR AVATAR ----
-def classify_avatar_pixel(r, g, b, a, chars):
-    if a < 100:
-        return None, " "
-    gray = int(0.299 * r + 0.587 * g + 0.114 * b)
-    idx = int((gray / 255.0) ** 0.85 * (len(chars) - 1))
-    ch = chars[idx]
-    if ch == " ":
-        ch = "."
-        
-    # 1. Pink Inner Ear tint
-    if r > 170 and g < 140 and b < 165:
-        return "#ff7b72", ch
-        
-    # 2. Denim / Cyan Bandana Scarf
-    if (b > r + 12 and b > 85) or (b > g + 8 and b > 100):
-        return "#58a6ff", ch
-        
-    # 3. Coffee Mug Rim / Brown coffee liquid
-    if (r > 135 and r > b + 15 and g > 85 and b < 165) or (r > 155 and g > 110 and b < 145):
-        return "#d29922", ch
-        
-    # 4. Black Sunglasses & Deep Ink lines
-    if r < 65 and g < 65 and b < 65:
-        return "#484f58", "#" if gray < 40 else "="
-        
-    # 5. Crisp White Fur & Glints
-    if gray > 180:
-        return "#ffffff", ch
-    elif gray > 120:
-        return "#c9d1d9", ch
-    else:
-        return "#8b949e", ch
-
-def get_chromatic_cat_ascii_lines(base_x=565, base_y=54, line_h=13.2, target_w=36, target_h=25):
+# ---- 1 · GENERATE TRUE-COLOR PHOTO-REALISTIC ASCII AVATAR ----
+def get_truecolor_cat_ascii_lines(base_x=562, base_y=42, line_h=13.5, target_w=38, target_h=24):
     if not os.path.exists(AVATAR_CLEAN):
         return []
     im = Image.open(AVATAR_CLEAN)
-    resized = im.resize((target_w, target_h), Image.Resampling.LANCZOS)
-    pix = list(resized.getdata())
-    chars = "   ..::--==++**##%%@@"
+    
+    # Enrich color saturation & subtle contrast so the ASCII characters glow on dark card
+    converter = ImageEnhance.Color(im)
+    im_vibrant = converter.enhance(1.22)
+    contrast_enhancer = ImageEnhance.Contrast(im_vibrant)
+    im_vibrant = contrast_enhancer.enhance(1.08)
+    
+    resized = im_vibrant.resize((target_w, target_h), Image.Resampling.LANCZOS)
+    px = resized.load()
+    
+    chars = " .:coCO8@"
     
     svg_lines = []
     for y in range(target_h):
-        delay = 0.25 + y * 0.02
+        delay = 0.22 + y * 0.02
         runs = []
         cur_color = None
         cur_text = ""
         for x in range(target_w):
-            r, g, b, a = pix[y * target_w + x]
-            color, ch = classify_avatar_pixel(r, g, b, a, chars)
+            r, g, b, a = px[x, y]
+            if a < 45:
+                color = None
+                ch = " "
+            else:
+                gray = int(0.299 * r + 0.587 * g + 0.114 * b)
+                if gray < 35:
+                    ch = "#"
+                    cr, cg, cb = 48, 54, 66  # Defined dark slate for glasses lenses & ink
+                else:
+                    idx = int((gray / 255.0) * (len(chars) - 1))
+                    ch = chars[idx]
+                    cr, cg, cb = r, g, b
+                # Lossless color grouping: round to 4 for seamless gradients + compact SVG
+                cr = min(255, (cr // 4) * 4)
+                cg = min(255, (cg // 4) * 4)
+                cb = min(255, (cb // 4) * 4)
+                color = f"#{cr:02x}{cg:02x}{cb:02x}"
+                
             if color != cur_color:
                 if cur_text:
                     runs.append((cur_color, cur_text))
@@ -192,10 +184,10 @@ def get_chromatic_cat_ascii_lines(base_x=565, base_y=54, line_h=13.2, target_w=3
         )
     return svg_lines
 
-# ---- 2 · HERO CARD (Chromatic Defined ASCII, No Text Overlap) -----------------
+# ---- 2 · HERO CARD (True-Color Photo-Realistic ASCII Avatar) -------------------
 def hero():
     h = 380
-    ascii_svg_lines = get_chromatic_cat_ascii_lines(base_x=565, base_y=54, line_h=13.2, target_w=36, target_h=25)
+    ascii_svg_lines = get_truecolor_cat_ascii_lines(base_x=562, base_y=42, line_h=13.5, target_w=38, target_h=24)
 
     body = f"""
 <defs>
