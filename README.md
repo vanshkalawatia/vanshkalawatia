@@ -4,7 +4,7 @@
 </p>
 
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=16&duration=3000&pause=1500&color=8B5CF6&center=true&vCenter=true&width=620&lines=Surpassing+my+limits...+that+is+all+I+have+ever+known.+-+Vegeta;Admiration+is+the+furthest+state+from+understanding.+-+Aizen;The+only+thing+humans+are+equal+in+is+death.+-+Johan+Liebert;In+the+end+the+winner+is+the+last+man+standing.+-+Guts" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=16&duration=3000&pause=1500&color=8B5CF6&center=true&vCenter=true&width=640&lines=Surpassing+my+limits...+that+is+all+I+have+ever+known.+-+Vegeta;No+one+stands+on+top+of+the+world.+I+will+stand+in+heaven.+-+Aizen;The+only+thing+humans+are+truly+equal+in+is+death.+-+Johan+Liebert;Struggle+and+endure.+That+alone+is+the+sword+to+defy+fate.+-+Guts" alt="Typing SVG" />
 </p>
 
 <br/>
@@ -39,11 +39,11 @@ class Vansh:
 
 </td>
 <td width="45%" align="center">
-  <img src="https://user-images.githubusercontent.com/74038190/212257465-7ce8d493-cac5-494e-982a-5a9deb852c4b.gif" width="280"/>
+  <img src="assets/guts.gif" width="280" alt="Guts · Berserk"/>
   <br/><br/>
-  <sub><i>"Even if we painstakingly piece together what was lost, it doesn't mean things will return to how they were."</i></sub>
+  <sub><i>"Struggle, endure, contend. That alone is the sword of one who defies fate."</i></sub>
   <br/>
-  <sub>— Guts</sub>
+  <sub>— Guts · Berserk</sub>
 </td>
 </tr>
 </table>
@@ -151,5 +151,5 @@ class Vansh:
 </p>
 
 <p align="center">
-  <sub><i>"The only thing humans are truly equal in is death."</i> — Johan Liebert</sub>
+  <sub><i>"There is only one certainty in life. A strong man stands above and conquers all."</i> — Prince Vegeta</sub>
 </p>
