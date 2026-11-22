@@ -3,8 +3,8 @@
 Render Vansh Kalawatia's profile README cards as animated SVGs into cards/.
 Theme: Monochrome Manga Noir (Johan Liebert / Monster / Berserk psychological aesthetic).
 Cards:
-- hero.svg (With pure ASCII portrait of the Sunglasses Cat - NO terminal box, just clean floating ASCII)
-- whoami.svg (Dedicated Who Am I: Identity, Engineering, Anime Mindset - 100% valid XML)
+- hero.svg (With pure ASCII portrait of the Sunglasses Cat - NO terminal box, floating cleanly)
+- whoami.svg (Spacious, un-congested editorial card: Identity, Engineering, Anime Mindset)
 - heatmap.svg (Contribution graph in monochrome ink)
 - title-coding-dark.svg / title-coding-light.svg (Featured Repositories title)
 - repo-Phase-1-First-Real-Tools.svg
@@ -18,7 +18,7 @@ import json
 import os
 import re
 from html import escape
-from PIL import Image, ImageEnhance
+from PIL import Image
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, "..")
@@ -116,8 +116,8 @@ def text_lines(x, y, lines, lh, attrs):
         f'<text x="{x}" y="{y + i * lh}" {attrs}>{escape(l)}</text>' for i, l in enumerate(lines)
     )
 
-# ---- 1 · GENERATE CLEAN CAT ASCII (NO BACKGROUND, NO TERMINAL) ----
-def get_cat_ascii_lines(target_w=44, target_h=25):
+# ---- 1 · GENERATE CLEAN CAT ASCII FROM USER PNG ----
+def get_cat_ascii_lines(target_w=42, target_h=26):
     if not os.path.exists(AVATAR_NOBG):
         return []
     im = Image.open(AVATAR_NOBG)
@@ -129,7 +129,7 @@ def get_cat_ascii_lines(target_w=44, target_h=25):
         line = ""
         for c in range(target_w):
             r_val, g_val, b_val, a_val = pix[r * target_w + c]
-            if a_val < 50:
+            if a_val < 60:
                 line += " "
             else:
                 gray = int(0.299 * r_val + 0.587 * g_val + 0.114 * b_val)
@@ -137,20 +137,18 @@ def get_cat_ascii_lines(target_w=44, target_h=25):
         lines.append(line)
     return lines
 
-# ---- 2 · HERO CARD (With Direct Floating ASCII, NO Terminal Window) -------------
+# ---- 2 · HERO CARD (With Direct Floating ASCII, NO Terminal Box) -------------
 def hero():
     h = 420
     ascii_rows = get_cat_ascii_lines(42, 26)
     
-    # Render pure ASCII lines directly floating on the card (like Avi's portrait)
     ascii_svg_lines = []
-    base_x = 480
-    base_y = 68
-    line_h = 13.5
+    base_x = 485
+    base_y = 60
+    line_h = 13.6
     for i, line_str in enumerate(ascii_rows):
         delay = 0.25 + i * 0.02
-        # Use stark white for the cat fur and sunglasses
-        color = "#ffffff" if (8 <= i <= 17) else "#c9d1d9"
+        color = "#ffffff" if (6 <= i <= 17) else "#c9d1d9"
         ascii_svg_lines.append(
             f'<text class="f" style="animation-delay:{delay:.2f}s" xml:space="preserve" '
             f'x="{base_x}" y="{base_y + i * line_h}" fill="{color}" font-family="{MONO}" '
@@ -198,13 +196,13 @@ def hero():
     write("hero.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
                           "Vansh Kalawatia · despair0x00. Python Backend Engineer. Targeting Summer 2027 Internship."))
 
-# ---- 3 · DEDICATED "WHO AM I" CARD (100% VALID XML) ---------------------------
+# ---- 3 · SPACIOUS, UN-CONGESTED "WHO AM I" CARD (whoami.svg) -------------------
 def whoami():
-    h = 280
+    h = 320  # Expanded height so all content breathes comfortably
     body = f"""
 <defs>
-  <pattern id="whoami_grid" width="20" height="20" patternUnits="userSpaceOnUse">
-    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#21262d" stroke-width="0.5" opacity="0.4"/>
+  <pattern id="whoami_grid" width="24" height="24" patternUnits="userSpaceOnUse">
+    <path d="M 24 0 L 0 0 0 24" fill="none" stroke="#21262d" stroke-width="0.5" opacity="0.35"/>
   </pattern>
 </defs>
 <rect width="{W}" height="{h}" rx="14" fill="{BG_MAIN}"/>
@@ -213,41 +211,32 @@ def whoami():
 
 <!-- Top Metadata Pill -->
 <g class="f" {d(0.1)}>
-  <rect class="live" x="42" y="34" width="7" height="7" rx="2" fill="{ACCENT}"/>
-  <text x="58" y="41" font-family="{MONO}" font-size="11" letter-spacing="1.5" fill="{TEXT_MUTED}">WHO I AM // IDENTITY, ARCHITECTURE &amp; MINDSET</text>
+  <rect class="live" x="48" y="38" width="7" height="7" rx="2" fill="{ACCENT}"/>
+  <text x="64" y="45" font-family="{MONO}" font-size="11.5" letter-spacing="1.5" fill="{TEXT_MUTED}">WHO I AM // IDENTITY, ARCHITECTURE &amp; MINDSET</text>
 </g>
 
 <!-- Big Editorial Title -->
-<text class="r" {d(0.25)} x="40" y="86" font-family="{SERIF}" font-size="38" fill="{TEXT_MAIN}">The Engineer <tspan font-style="italic" fill="{TEXT_SILVER}">&amp; The Philosophy</tspan></text>
+<text class="r" {d(0.25)} x="46" y="92" font-family="{SERIF}" font-size="38" fill="{TEXT_MAIN}">The Engineer <tspan font-style="italic" fill="{TEXT_SILVER}">&amp; The Philosophy</tspan></text>
 
 <!-- Divider Line -->
-<line x1="42" y1="108" x2="{W - 42}" y2="108" stroke="{BORDER}" stroke-width="1"/>
+<line x1="48" y1="116" x2="{W - 48}" y2="116" stroke="{BORDER}" stroke-width="1"/>
 
-<!-- Left Column: The Engineer -->
+<!-- Left Column: The Engineer (Clean, wide, spacious) -->
 <g class="r" {d(0.4)}>
-  <text x="42" y="136" font-family="{MONO}" font-size="12" letter-spacing="1" fill="#58a6ff">// BACKGROUND &amp; FOCUS</text>
-  <text x="42" y="164" font-family="{SANS}" font-size="14.5" fill="{TEXT_MAIN}">3rd-year B.Tech CSE undergrad in India targeting a <tspan font-weight="600">Summer 2027</tspan></text>
-  <text x="42" y="188" font-family="{SANS}" font-size="14.5" fill="{TEXT_MAIN}">Python Backend Engineering Internship.</text>
-  <text x="42" y="222" font-family="{MONO}" font-size="12" fill="{TEXT_MUTED}">STACK : <tspan fill="{TEXT_SILVER}">Python 3.12 · FastAPI · PostgreSQL · Redis · Docker · Linux</tspan></text>
-  <text x="42" y="244" font-family="{MONO}" font-size="12" fill="{TEXT_MUTED}">ALIAS : <tspan fill="{TEXT_MAIN}">vanshkalawatia</tspan> &#160;·&#160; SIDE QUEST: <tspan fill="{TEXT_MAIN}">@despair0x00</tspan></text>
+  <text x="48" y="150" font-family="{MONO}" font-size="12" letter-spacing="1.5" fill="#58a6ff">// BACKEND ENGINEERING</text>
+  <text x="48" y="184" font-family="{SANS}" font-size="15.5" fill="{TEXT_MAIN}">3rd-year B.Tech CSE student in India, targeting a <tspan font-weight="600" fill="#ffffff">Summer 2027</tspan></text>
+  <text x="48" y="210" font-family="{SANS}" font-size="15.5" fill="{TEXT_MAIN}">Python Backend Engineering Internship.</text>
+  <text x="48" y="244" font-family="{SANS}" font-size="14" fill="{TEXT_MUTED}">Architecting high-throughput REST APIs, async pipelines &amp; microservices.</text>
+  <text x="48" y="282" font-family="{MONO}" font-size="12" fill="{TEXT_SILVER}">STACK : <tspan fill="{TEXT_MAIN}">Python 3.12 · FastAPI · PostgreSQL · Redis · Docker · Linux</tspan></text>
 </g>
 
-<!-- Center Vertical Separator -->
-<line x1="510" y1="120" x2="510" y2="256" stroke="{BORDER}" stroke-width="1" stroke-dasharray="3 3"/>
-
-<!-- Right Column: The Philosophy & Anime Taste -->
+<!-- Right Column: The Philosophy & Anime Taste (Relaxed & elegant) -->
 <g class="r" {d(0.55)}>
-  <text x="540" y="136" font-family="{MONO}" font-size="12" letter-spacing="1" fill="#7ee787">// MINDSET &amp; INSPIRATION</text>
-  
-  <!-- Stoic Anime Quote Container -->
-  <rect x="540" y="152" width="298" height="66" rx="8" fill="{SURFACE}"/>
-  <rect x="540.75" y="152.75" width="296.5" height="64.5" rx="7.25" fill="none" stroke="{BORDER}" stroke-width="1"/>
-  
-  <text x="554" y="177" font-family="{SANS}" font-style="italic" font-size="13" fill="{TEXT_MAIN}">"Surpassing my limits... that's all I've ever</text>
-  <text x="554" y="196" font-family="{SANS}" font-style="italic" font-size="13" fill="{TEXT_MAIN}">known."</text>
-  <text x="618" y="196" font-family="{MONO}" font-size="11" fill="{TEXT_MUTED}">— Vegeta / Guts (Berserk)</text>
-  
-  <text x="540" y="244" font-family="{MONO}" font-size="11.5" fill="{TEXT_MUTED}">VIBE  : <tspan fill="{TEXT_SILVER}">Guts · Johan Liebert · Aizen · Methodical Grit</tspan></text>
+  <text x="495" y="150" font-family="{MONO}" font-size="12" letter-spacing="1.5" fill="#7ee787">// STOIC MINDSET &amp; ANIME</text>
+  <text x="495" y="188" font-family="{SERIF}" font-style="italic" font-size="22" fill="{TEXT_MAIN}">"Surpassing my limits... that's all I've ever known."</text>
+  <text x="495" y="218" font-family="{MONO}" font-size="12" fill="{TEXT_MUTED}">— Vegeta  /  Guts (Berserk)</text>
+  <text x="495" y="252" font-family="{SANS}" font-size="14" fill="{TEXT_SILVER}">Calm, methodical execution driven by unrelenting consistency.</text>
+  <text x="495" y="282" font-family="{MONO}" font-size="12" fill="{TEXT_MUTED}">INSPIRATION : <tspan fill="{TEXT_SILVER}">Guts · Johan Liebert · Aizen · Berserk</tspan></text>
 </g>
 """
     write("whoami.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
