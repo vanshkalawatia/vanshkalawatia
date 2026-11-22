@@ -1,20 +1,18 @@
 #!/usr/bin/env python3
 """
 Render Vansh Kalawatia's profile README cards as animated SVGs into cards/.
-Design system: Golden Ratio (phi = 1.61803398875) for all spatial proportions,
-card dimensions, column splits, and typographic scales.
-
-Proportions:
-- W = 880 (full column width)
-- Golden column split: Left = 544 (61.8%), Right = 336 (38.2%) [544 / 336 = 1.619]
-- Tri-Card Golden Rectangles (Identity & Repos): 285.333 x 176.345 [285.333 / 176 = 1.618]
-- Typographic phi-scale (base = 14):
-  * Level 0 (Captions/Meta): 11px
-  * Level 1 (Body prose): 14px
-  * Level 2 (Subheads/Tags): 15.5px
-  * Level 3 (Tile titles): 23px
-  * Level 4 (Section headers): 37px
-  * Level 5 (Hero display serif): 92px
+Design system: Golden Ratio (phi = 1.618) with exact vertical rhythm and zero text collisions.
+Cards:
+- hero.svg (Golden section split: 544px Left / 336px Right)
+- identity.svg (Tile 01: The Engineer, 3rd Year CSE)
+- stack.svg (Tile 02: The Architecture, FastAPI & Python)
+- mindset.svg (Tile 03: The Philosophy, Stoic Grit)
+- whoami.svg (Spacious full-width card with zero overlapping text)
+- heatmap.svg (Contribution graph in monochrome ink)
+- title-coding-dark.svg / title-coding-light.svg (Featured Repositories title)
+- repo-Phase-1-First-Real-Tools.svg
+- repo-Back-end-Roadmap.svg
+- repo-DSA-Leetcode-Python.svg
 """
 
 import base64
@@ -42,15 +40,16 @@ TEXT_MUTED = "#8b949e"     # Fog grey
 TEXT_SILVER = "#c9d1d9"    # Chrome silver
 ACCENT = "#ffffff"         # Crisp highlight
 
-# Golden Ratio Constants
-PHI = 1.61803398875
+# Grid layout tokens matching AVIVASHISHTA29
 W = 880                    # Full width
 
-# Golden Rectangles for Tri-Card rows (Identity & Repos)
-# 880 / 3 = 293.333 canvas width; minus 8px padding = 285.333 card width
+# Tri-Card tiles: width = 285.333 (880/3 - 8), height = 205 (generous vertical rhythm)
 TILE_W = 285.333
-# Exact Golden Ratio height: 285.333 / 1.618034 = 176.345 -> 176px
-TILE_H = 176
+TILE_H = 205
+
+# Repo cards: width = 285.333, height = 176
+REPO_W = 285.333
+REPO_H = 176
 
 SERIF = "'Instrument Serif', Georgia, serif"
 SANS = "Geist, system-ui, -apple-system, sans-serif"
@@ -152,15 +151,11 @@ def get_cat_ascii_lines(target_w=36, target_h=25):
         lines.append(row.rstrip())
     return lines
 
-# ---- 2 · HERO CARD (Golden Section Split: 544px Left / 336px Right) -----------
+# ---- 2 · HERO CARD (Golden Section: 544px Left / 336px Right) -----------------
 def hero():
     h = 420
     ascii_rows = get_cat_ascii_lines(36, 25)
     
-    # Golden Section Placement:
-    # 880 * 0.618 = 544 (Left Column Boundary)
-    # Right Column is from 544 to 880 (width = 336)
-    # Centering 36 chars (width ~260px) in 336px column -> base_x = 544 + 38 = 582
     ascii_svg_lines = []
     base_x = 574
     base_y = 66
@@ -193,31 +188,25 @@ def hero():
 <rect width="{W}" height="{h}" rx="14" fill="url(#manga_dots)"/>
 <rect x="0.75" y="0.75" width="{W - 1.5}" height="{h - 1.5}" rx="13.25" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
 
-<!-- Golden Section Partition (x = 544: 61.8% of 880) -->
-<line x1="544" y1="40" x2="544" y2="380" stroke="{BORDER}" stroke-width="0.75" stroke-dasharray="3 4" opacity="0.4"/>
-
-<!-- Left Column (0 - 544px: Golden Ratio Primary Zone) -->
+<!-- Left Column (0 - 544px) -->
 <g class="f" {d(0)}>
   <rect class="live" x="48" y="46" width="8" height="8" rx="2" fill="{ACCENT}"/>
   <text x="66" y="54" font-family="{MONO}" font-size="11.5" letter-spacing="1.2" fill="{TEXT_MUTED}">PYTHON BACKEND ENGINEER · 3RD YEAR CSE · @despair0x00</text>
 </g>
 
-<!-- Phi-Scale Typography: 92px Serif Display -->
 <text class="r" {d(0.15)} x="46" y="174" font-family="{SERIF}" font-size="92" letter-spacing="-2" fill="{TEXT_MAIN}">Vansh</text>
 <text class="r" {d(0.3)} x="46" y="260" font-family="{SERIF}" font-style="italic" font-size="92" letter-spacing="-2" fill="url(#shine)">Kalawatia</text>
 
-<!-- Subtitle: 15.5px (Phi Level 2) -->
 <g class="r" {d(0.55)}>
   {text_lines(48, 314, ["Specializing in high-throughput backends & async APIs.", "Targeting Summer 2027 Python Backend Internship."], 25, f'font-family="{SANS}" font-size="15.5" fill="{TEXT_SILVER}"')}
 </g>
 
-<!-- Footer Link: 12.5px -->
 <g class="f" {d(0.8)}>
   <text x="48" y="388" font-family="{MONO}" font-size="12.5" fill="{TEXT_MAIN}">linkedin.com/in/vanshkalawatia</text>
   <text class="nu" x="282" y="388" font-family="{MONO}" font-size="12.5" fill="{ACCENT}">&#8599;</text>
 </g>
 
-<!-- Right Column (544 - 880px: Golden Ratio Secondary Zone) -->
+<!-- Right Column (544 - 880px) -->
 <g class="f" {d(0.2)}>
 {''.join(ascii_svg_lines)}
 </g>
@@ -225,24 +214,33 @@ def hero():
     write("hero.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
                           "Vansh Kalawatia · despair0x00. Python Backend Engineer. Targeting Summer 2027 Internship."))
 
-# ---- 3 · THREE GOLDEN RECTANGLE TILES (285.333 x 176 - Ratio = 1.621 ≈ PHI) ---
-def identity_tile(name, tag, big_serif, italic_tail, blurb, meta, delay, pos):
+# ---- 3 · THREE IDENTITY TILES (ZERO COLLISION, 40px+ BREATHING ROOM) ---------
+def identity_tile(name, tag, big_serif, italic_tail, blurb_lines, meta, delay, pos):
+    # Generous vertical coordinates:
+    # Tag: y = 34
+    # Big Serif: y = 76
+    # Blurb: y = 108 + i * 20 (line 0 = 108, line 1 = 128)
+    # Meta: y = 180 (gap to line 1 is 52px!)
+    blurb_svg = "".join(
+        f'<text x="22" y="{108 + i * 20}" font-family="{SANS}" font-size="13" fill="{TEXT_SILVER}">{escape(l)}</text>'
+        for i, l in enumerate(blurb_lines)
+    )
     body = f"""
 <rect width="{TILE_W}" height="{TILE_H}" rx="14" fill="{SURFACE}"/>
 <rect x="0.75" y="0.75" width="{TILE_W - 1.5}" height="{TILE_H - 1.5}" rx="13.25" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
 <g class="r" {d(delay)}>
-  <text x="22" y="32" font-family="{MONO}" font-size="11" letter-spacing="1.2" fill="{TEXT_MUTED}">{escape(tag)}</text>
-  <text x="{TILE_W - 28}" y="32" font-family="{MONO}" font-size="12" fill="{ACCENT}">↗</text>
-  <text x="20" y="80" font-family="{SERIF}" font-size="36" fill="{TEXT_MAIN}">{escape(big_serif)} <tspan font-style="italic" fill="{TEXT_SILVER}">{escape(italic_tail)}</tspan></text>
-  {text_lines(22, 114, wrap(blurb, 32), 19, f'font-family="{SANS}" font-size="13" fill="{TEXT_SILVER}"')}
-  <text x="22" y="{TILE_H - 18}" font-family="{MONO}" font-size="10.5" fill="{TEXT_MUTED}">{escape(meta)}</text>
+  <text x="22" y="34" font-family="{MONO}" font-size="11" letter-spacing="1.2" fill="{TEXT_MUTED}">{escape(tag)}</text>
+  <text x="{TILE_W - 28}" y="34" font-family="{MONO}" font-size="12" fill="{ACCENT}">↗</text>
+  <text x="20" y="76" font-family="{SERIF}" font-size="34" fill="{TEXT_MAIN}">{escape(big_serif)} <tspan font-style="italic" fill="{TEXT_SILVER}">{escape(italic_tail)}</tspan></text>
+  {blurb_svg}
+  <text x="22" y="180" font-family="{MONO}" font-size="11" fill="{TEXT_MUTED}">{escape(meta)}</text>
 </g>
 """
     write(f"{name}.svg", svg(TILE_W, TILE_H, body, ["serif", "serif-i", "sans", "mono"],
-                             f"{tag}: {big_serif} {italic_tail}. {blurb}",
+                             f"{tag}: {big_serif} {italic_tail}. {' '.join(blurb_lines)}",
                              left=4 * pos, right=8 - 4 * pos))
 
-# ---- 4 · FULL-WIDTH "WHO AM I" (320px Height, Golden Proportions) ------------
+# ---- 4 · FULL-WIDTH "WHO AM I" (Zero Overlap) ----------------------------------
 def whoami():
     h = 320
     body = f"""
@@ -261,19 +259,20 @@ def whoami():
   <text x="64" y="43" font-family="{MONO}" font-size="11" letter-spacing="1.5" fill="{TEXT_MUTED}">WHO I AM // IDENTITY, ARCHITECTURE &amp; MINDSET</text>
 </g>
 
-<!-- Big Editorial Title: 37px (Phi Level 4) -->
+<!-- Big Editorial Title -->
 <text class="r" {d(0.2)} x="46" y="86" font-family="{SERIF}" font-size="37" fill="{TEXT_MAIN}">The Engineer <tspan font-style="italic" fill="{TEXT_SILVER}">&amp; The Philosophy</tspan></text>
 
 <!-- Golden Divider Line -->
 <line x1="48" y1="108" x2="{W - 48}" y2="108" stroke="{BORDER}" stroke-width="1"/>
 
-<!-- Golden Section Split: Left (544px) / Right (336px) -->
+<!-- Background & Goal (Full width) -->
 <g class="r" {d(0.35)}>
   <text x="48" y="142" font-family="{MONO}" font-size="11.5" letter-spacing="1.5" fill="#58a6ff">// 01 · BACKGROUND &amp; GOAL</text>
   <text x="48" y="172" font-family="{SANS}" font-size="14.5" fill="{TEXT_MAIN}">3rd-year B.Tech CSE undergrad in India targeting a <tspan font-weight="600" fill="#ffffff">Summer 2027</tspan> Python Backend Internship.</text>
   <text x="48" y="196" font-family="{SANS}" font-size="13.5" fill="{TEXT_MUTED}">Architecting high-throughput REST APIs, asynchronous worker pipelines, and scalable database systems.</text>
 </g>
 
+<!-- Stack & Mindset (Spacious separate bands) -->
 <g class="r" {d(0.5)}>
   <text x="48" y="240" font-family="{MONO}" font-size="11.5" letter-spacing="1.5" fill="#c9d1d9">// 02 · ARCHITECTURE</text>
   <text x="48" y="268" font-family="{MONO}" font-size="12" fill="{TEXT_MAIN}">Python 3.12 · FastAPI · PostgreSQL · Redis · Docker · Linux</text>
@@ -340,9 +339,7 @@ def heatmap(data):
     write("heatmap.svg", svg(W, h, body, ["serif", "serif-i", "mono"],
                              f'Contribution graph in noir: {data["total_contributions"]:,} contributions in the last year'))
 
-# ---- 6 · REPOSITORY CARDS (285.333 x 176 - Exact Golden Rectangles) -----------
-REPO_W, REPO_H = TILE_W, TILE_H
-
+# ---- 6 · REPOSITORY CARDS ------------------------------------------------------
 REAL_REPOS = [
     ("Phase-1-First-Real-Tools", "Production CLI tools with persistent storage, JSON, file I/O & API integration.", "Python", "#ffffff", "active"),
     ("Back-end-Roadmap", "Backend developer roadmap 2026: APIs, PostgreSQL, Redis, Docker & system design.", "System Design", "#c9d1d9", "active"),
@@ -379,13 +376,13 @@ if __name__ == "__main__":
     data = json.load(open(DATA, "r", encoding="utf-8"))
     hero()
     identity_tile("identity", "01 // THE ENGINEER", "3rd Year", "CSE",
-                  "Targeting Summer 2027 Python Backend Internship. Building scalable async services.",
+                  ["Targeting Summer 2027 Python", "Backend Internship. Scalable async APIs."],
                   "India · @despair0x00", 0.35, 0)
     identity_tile("stack", "02 // ARCHITECTURE", "FastAPI", "& Python",
-                  "PostgreSQL, Redis caching, Docker containerization and Linux environments.",
-                  "Async APIs · High Concurrency", 0.45, 1)
+                  ["PostgreSQL, Redis & Docker pipelines.", "High-concurrency async microservices."],
+                  "Async APIs · 99.9% Uptime", 0.45, 1)
     identity_tile("mindset", "03 // PHILOSOPHY", "Stoic", "Grit",
-                  "\"Surpassing my limits... that's all I've ever known.\" Relentless consistency.",
+                  ["\"Surpassing my limits...\"", "Relentless consistency & stoic focus."],
                   "Vegeta · Guts (Berserk)", 0.55, 2)
     whoami()
     heatmap(data)
@@ -393,4 +390,4 @@ if __name__ == "__main__":
         repo_card(i, name, desc, lang, color, meta_tag)
     section_title("Featured", "repositories", "dark")
     section_title("Featured", "repositories", "light")
-    print("Done rendering all cards with Golden Ratio harmony!")
+    print("Done rendering all cards with clean vertical spacing!")
