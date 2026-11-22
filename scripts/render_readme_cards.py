@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
 Render Vansh Kalawatia's profile README cards as animated SVGs into cards/.
-Theme: Monochrome Manga Noir.
+Theme: Monochrome Manga Noir with Multi-Color Chromatic ASCII Avatar.
 Cards:
-- hero.svg (Clean, bold, zero filler description below name)
+- hero.svg (Clean, bold, multi-color defined ASCII avatar: pink ear, blue scarf, white fur, dark sunglasses)
 - about.svg (Spacious bullet-point developer card: easy to scan, generous line spacing)
 - heatmap.svg (Contribution graph in monochrome ink)
 - title-coding-dark.svg / title-coding-light.svg (Featured Repositories title)
@@ -116,45 +116,86 @@ def text_lines(x, y, lines, lh, attrs):
         f'<text x="{x}" y="{y + i * lh}" {attrs}>{escape(l)}</text>' for i, l in enumerate(lines)
     )
 
-# ---- 1 · GENERATE REFINED CAT ASCII ----
-def get_cat_ascii_lines(target_w=36, target_h=25):
+# ---- 1 · GENERATE CHROMATIC MULTI-COLOR ASCII FOR AVATAR ----
+def classify_avatar_pixel(r, g, b, a, chars):
+    if a < 100:
+        return None, " "
+    gray = int(0.299 * r + 0.587 * g + 0.114 * b)
+    idx = int((gray / 255.0) ** 0.85 * (len(chars) - 1))
+    ch = chars[idx]
+    if ch == " ":
+        ch = "."
+        
+    # 1. Pink Inner Ear tint
+    if r > 170 and g < 140 and b < 165:
+        return "#ff7b72", ch
+        
+    # 2. Denim / Cyan Bandana Scarf
+    if (b > r + 12 and b > 85) or (b > g + 8 and b > 100):
+        return "#58a6ff", ch
+        
+    # 3. Coffee Mug Rim / Brown coffee liquid
+    if (r > 135 and r > b + 15 and g > 85 and b < 165) or (r > 155 and g > 110 and b < 145):
+        return "#d29922", ch
+        
+    # 4. Black Sunglasses & Deep Ink lines
+    if r < 65 and g < 65 and b < 65:
+        return "#484f58", "#" if gray < 40 else "="
+        
+    # 5. Crisp White Fur & Glints
+    if gray > 180:
+        return "#ffffff", ch
+    elif gray > 120:
+        return "#c9d1d9", ch
+    else:
+        return "#8b949e", ch
+
+def get_chromatic_cat_ascii_lines(base_x=565, base_y=54, line_h=13.2, target_w=36, target_h=25):
     if not os.path.exists(AVATAR_CLEAN):
         return []
     im = Image.open(AVATAR_CLEAN)
     resized = im.resize((target_w, target_h), Image.Resampling.LANCZOS)
     pix = list(resized.getdata())
     chars = "   ..::--==++**##%%@@"
-    lines = []
-    for r in range(target_h):
-        row = ""
-        for c in range(target_w):
-            r_val, g_val, b_val, a_val = pix[r * target_w + c]
-            if a_val < 100:
-                row += " "
+    
+    svg_lines = []
+    for y in range(target_h):
+        delay = 0.25 + y * 0.02
+        runs = []
+        cur_color = None
+        cur_text = ""
+        for x in range(target_w):
+            r, g, b, a = pix[y * target_w + x]
+            color, ch = classify_avatar_pixel(r, g, b, a, chars)
+            if color != cur_color:
+                if cur_text:
+                    runs.append((cur_color, cur_text))
+                cur_color = color
+                cur_text = ch
             else:
-                gray = int(0.299 * r_val + 0.587 * g_val + 0.114 * b_val)
-                idx = int((gray / 255.0) ** 0.85 * (len(chars) - 1))
-                row += chars[idx]
-        lines.append(row.rstrip())
-    return lines
+                cur_text += ch
+        if cur_text:
+            runs.append((cur_color, cur_text))
+            
+        tspans = []
+        for color, text in runs:
+            escaped = escape(text)
+            if color is None or text.strip() == "":
+                tspans.append(escaped)
+            else:
+                tspans.append(f'<tspan fill="{color}">{escaped}</tspan>')
+                
+        svg_lines.append(
+            f'<text class="f" style="animation-delay:{delay:.2f}s" xml:space="preserve" '
+            f'x="{base_x}" y="{base_y + y * line_h}" font-family="{MONO}" '
+            f'font-size="11" letter-spacing="1.2">{"".join(tspans)}</text>'
+        )
+    return svg_lines
 
-# ---- 2 · HERO CARD (Bold, Iconic, No Useless Filler Text) ----------------------
+# ---- 2 · HERO CARD (Chromatic Defined ASCII, No Text Overlap) -----------------
 def hero():
     h = 380
-    ascii_rows = get_cat_ascii_lines(36, 25)
-    
-    ascii_svg_lines = []
-    base_x = 565
-    base_y = 52
-    line_h = 13.2
-    for i, line_str in enumerate(ascii_rows):
-        delay = 0.25 + i * 0.02
-        color = "#ffffff" if (5 <= i <= 16) else "#c9d1d9"
-        ascii_svg_lines.append(
-            f'<text class="f" style="animation-delay:{delay:.2f}s" xml:space="preserve" '
-            f'x="{base_x}" y="{base_y + i * line_h}" fill="{color}" font-family="{MONO}" '
-            f'font-size="11" letter-spacing="1.2">{escape(line_str)}</text>'
-        )
+    ascii_svg_lines = get_chromatic_cat_ascii_lines(base_x=565, base_y=54, line_h=13.2, target_w=36, target_h=25)
 
     body = f"""
 <defs>
@@ -181,7 +222,7 @@ def hero():
   <text x="66" y="54" font-family="{MONO}" font-size="11.5" letter-spacing="1.2" fill="{TEXT_MUTED}">BACKEND DEVELOPER · 3RD YEAR CSE · @despair0x00</text>
 </g>
 
-<!-- Big Bold Serif Name (No useless filler text below it) -->
+<!-- Big Bold Serif Name (Iconic & spacious) -->
 <text class="r" {d(0.15)} x="46" y="174" font-family="{SERIF}" font-size="96" letter-spacing="-2" fill="{TEXT_MAIN}">Vansh</text>
 <text class="r" {d(0.3)} x="46" y="264" font-family="{SERIF}" font-style="italic" font-size="96" letter-spacing="-2" fill="url(#shine)">Kalawatia</text>
 
@@ -191,7 +232,7 @@ def hero():
   <text class="nu" x="290" y="336" font-family="{MONO}" font-size="13" fill="{ACCENT}">&#8599;</text>
 </g>
 
-<!-- Right Column: Refined Pure ASCII Cat Avatar -->
+<!-- Right Column: Chromatic Multi-Color ASCII Portrait -->
 <g class="f" {d(0.2)}>
 {''.join(ascii_svg_lines)}
 </g>
@@ -201,7 +242,7 @@ def hero():
 
 # ---- 3 · SPACIOUS BULLET-POINT "ABOUT ME" CARD (about.svg) --------------------
 def about_me():
-    h = 320  # Generous height, ample whitespace
+    h = 320
     points = [
         ("0.30", 146, "Background", "3rd-year B.Tech CSE student (India) · Targeting Summer 2027 Backend Internship"),
         ("0.40", 182, "Engineering", "Building scalable REST APIs, async worker pipelines & CLI tools in Python & FastAPI"),
@@ -243,7 +284,7 @@ def about_me():
 <!-- Divider Line -->
 <line x1="48" y1="108" x2="{W - 48}" y2="108" stroke="{BORDER}" stroke-width="1"/>
 
-<!-- Spacious Bullet Points (36px vertical stride, clear column alignment) -->
+<!-- Spacious Bullet Points (36px vertical stride) -->
 {''.join(point_svgs)}
 """
     write("about.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
@@ -345,4 +386,4 @@ if __name__ == "__main__":
         repo_card(i, name, desc, lang, color, meta_tag)
     section_title("Featured", "repositories", "dark")
     section_title("Featured", "repositories", "light")
-    print("Done rendering all cards!")
+    print("Done rendering all cards with Chromatic ASCII Avatar!")
