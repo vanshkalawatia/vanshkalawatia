@@ -10,4 +10,4 @@
 .live{animation:pulse 1.6s ease-in-out infinite}
 .nu{transform-box:fill-box;animation:nudgeup 1.8s ease-in-out infinite}
 @media (prefers-reduced-motion: reduce){.r,.f,.p,.live,.nu{animation:none!important;opacity:1!important;transform:none!important}}
-</style><text class="r" style="animation-delay:1.80s" x="2" y="46" font-family="'Instrument Serif', Georgia, serif" font-size="34" fill="#f0f6fc">Featured <tspan font-style="italic">repositories</tspan></text></svg>
+</style><text class="r" style="animation-delay:1.40s" x="2" y="46" font-family="'Instrument Serif', Georgia, serif" font-size="34" fill="#f0f6fc">Featured <tspan font-style="italic">repositories</tspan></text></svg>

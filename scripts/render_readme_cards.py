@@ -2,8 +2,9 @@
 """
 Render Vansh Kalawatia's profile README cards as animated SVGs into cards/.
 Theme: Monochrome Manga Noir (Johan Liebert / Monster / Berserk psychological aesthetic).
-Cards generated:
-- hero.svg (Vansh Kalawatia, Python Backend, despair0x00 terminal)
+Cards:
+- hero.svg (With animated ASCII profile portrait on the right)
+- whoami.svg (Dedicated Who Am I: Identity, Engineering, Anime Mindset)
 - heatmap.svg (Contribution graph in monochrome ink)
 - title-coding-dark.svg / title-coding-light.svg (Featured Repositories title)
 - repo-Phase-1-First-Real-Tools.svg
@@ -113,76 +114,193 @@ def text_lines(x, y, lines, lh, attrs):
         f'<text x="{x}" y="{y + i * lh}" {attrs}>{escape(l)}</text>' for i, l in enumerate(lines)
     )
 
-# ---- Terminal SVG generator for Hero Card ----
-def generate_hero_terminal():
+# ---- 1 · ASCII PORTRAIT GENERATOR (For Hero Card) ----
+def generate_hero_ascii_portrait():
     tw, th = 820, 840
-    lines = [
-        ("0.20", "$ whoami && cat ~/.mindset"),
-        ("0.35", "vanshkalawatia · despair0x00"),
-        ("0.50", "3rd Year CSE · Backend Developer"),
-        ("0.65", ""),
-        ("0.80", "$ cat ./philosophy.md"),
-        ("0.95", "\"The world is not beautiful, therefore it is.\" -- Kino"),
-        ("1.10", "\"Surpassing my limits... that's all I've ever known.\" -- Vegeta"),
-        ("1.25", ""),
-        ("1.40", "$ ./inspect_stack.sh"),
-        ("1.55", ">> Runtime : Python 3.12 · FastAPI · Uvicorn"),
-        ("1.70", ">> Storage : PostgreSQL · Redis · SQLite"),
-        ("1.85", ">> Infra   : Docker · Linux · Git CI/CD"),
-        ("2.00", ""),
-        ("2.15", "$ target --internship"),
-        ("2.30", ">> Summer 2027 Python Backend Internship"),
-        ("2.45", ">> Status : Ready to interview & build"),
-        ("2.60", "despair0x00@noir:~$ █")
+    # Detailed manga noir anime portrait in shaded ASCII
+    ascii_lines = [
+        "                 .:::::.                ",
+        "              .:::::::::::.             ",
+        "            .::::::::::::::::.          ",
+        "           ::::::::::::::::::::         ",
+        "          ::::::::::::::::::::::        ",
+        "         :::\"\"'  '\"\"\"\"\"\"'  '\"\":::       ",
+        "        ::'  .::.          .::.  '::    ",
+        "       ::   ::::::        ::::::   ::   ",
+        "      ::   '::::::        ::::::'   ::  ",
+        "     :::    '::::'        '::::'    ::: ",
+        "     :::                            ::: ",
+        "     :::         ..      ..         ::: ",
+        "     '::.       '::.    .::'       .::' ",
+        "      '::.        '::::::'        .::'  ",
+        "        '::.                    .::'    ",
+        "          '::.   .--------.   .::'      ",
+        "            '::.  '::::::'  .::'        ",
+        "             :::'          ':::         ",
+        "          .::::::::::::::::::::::.      ",
+        "       .::::::::::::::::::::::::::::.   ",
+        "     .::::::::::::::::::::::::::::::::. ",
+        "    ::::::::::::::::::::::::::::::::::::",
+        "   ::::::::::::::::::::::::::::::::::::::",
+        "  ::::::::::::::::::::::::::::::::::::::::",
+        "  ::::::::::::::::::::::::::::::::::::::::",
+        "  ::'  ::::::::::::::::::::::::::::::  '::",
+        "       '::::::::::::::::::::::::::::'   ",
+        "        '::::::::::::::::::::::::::'    ",
+        "         '::::::::::::::::::::::::'     ",
+        "          '::::::::::::::::::::::'      "
     ]
     
+    # Atmospheric manga noir ASCII rendering
+    # We create a richer anime-aesthetic portrait with hair layers and intense stare
+    rich_ascii = [
+        "                     .---.                      ",
+        "                   ./:::::\\.                    ",
+        "                 ./:::::::::\\.                  ",
+        "                /:::::::::::::\\                 ",
+        "               /:::::__:::__:::\\                ",
+        "              |:::::/  \\ /  \\:::|               ",
+        "              |::::| () | () |::|               ",
+        "              |:::::\\__/ \\__/:::|               ",
+        "              |::::::   _   ::::|   [STATION: NOIR]",
+        "              |::::::  / \\  ::::|   [ID: despair0x00]",
+        "               \\:::::  \\_/  :::/    [ROLE: BACKEND DEV]",
+        "                \\::::.     .::/                 ",
+        "                 '\\:::=====::/'                 ",
+        "                 .---|     |---.                ",
+        "               /     \\     /     \\              ",
+        "              |   .---'   '---.   |             ",
+        "              |  /   G U T S   \\  |             ",
+        "              | /   M I N D     \\ |             ",
+        "              |/    S E T        \\|             ",
+        "              /                   \\             ",
+        "             |   .-------------.   |            ",
+        "             |  /  PYTHON 3.12  \\  |            ",
+        "             | /    FASTAPI      \\ |            ",
+        "             |/     POSTGRES      \\|            ",
+        "             '---------------------'            "
+    ]
+
+    # Let's craft an authentic high-resolution terminal ascii portrait of Vansh (despair0x00):
+    ascii_portrait = [
+        "                        .---.",
+        "                      /       \\",
+        "                     |  O   O  |       // despair0x00",
+        "                 ---. \\   ^   / .---   // Python Backend",
+        "                /    '. '---' .'    \\  // 3rd Year CSE",
+        "               /   /\\  '-----'  /\\   \\",
+        "              /   /  \\         /  \\   \\",
+        "             /   /    |       |    \\   \\",
+        "            /___/     |_______|     \\___\\",
+        "             | |      |       |      | |",
+        "             | |      |   *   |      | |",
+        "             | |      |_______|      | |",
+        "            /   \\     |       |     /   \\",
+        "           |     |    |_______|    |     |",
+        "           |_____|                 |_____|"
+    ]
+
+    # High fidelity stylized character matrix
+    matrix_art = [
+        "                _.._                   ",
+        "              .' .-'`                  ",
+        "             /  /                      ",
+        "            |  |      .---.            ",
+        "            |  |     /  .  \\   [AURA]  ",
+        "             \\  \\   |  /|\\  |  GUTS    ",
+        "              '._'--'  \\|/  /  JOHAN   ",
+        "                 `---.     <   VEGETA  ",
+        "                     |  _   \\          ",
+        "                     | (_)  |          ",
+        "                     \\      /          ",
+        "                      `'--'`           ",
+        "                 .---.     .---.       ",
+        "                /     \\___/     \\      ",
+        "               |  ===  ___  ===  |     ",
+        "               |      [___]      |     ",
+        "               |   PYTHON  CORE  |     ",
+        "               |   FASTAPI ASYNC |     ",
+        "                \\_______________/      "
+    ]
+
+    # We will format this into a gorgeous manga console panel
+    terminal_header = [
+        ("0.20", "┌──────────────────────────────────────────────┐"),
+        ("0.25", "│  AVATAR SPECIFICATION // DESPAIR0X00         │"),
+        ("0.30", "├──────────────────────────────────────────────┤"),
+    ]
+
+    # Clean, crisp pixel-aligned ASCII silhouette
+    lines_art = [
+        "│           .-----------------------.          │",
+        "│          /  .-------------------.  \\         │",
+        "│         |  /                     \\  |        │",
+        "│         | |   _..._       _..._   | |        │",
+        "│         | |  / _   \\     /   _ \\  | |        │",
+        "│         | | | (_)   |   |   (_) | | |        │",
+        "│         | |  \\_____/  _  \\_____/  | |        │",
+        "│         | |          (_)          | |        │",
+        "│         | |     .-----------.     | |        │",
+        "│         | |      \\         /      | |        │",
+        "│         |  \\      '-------'      /  |        │",
+        "│          \\  '-------------------'  /         │",
+        "│           '-----------------------'          │",
+        "├──────────────────────────────────────────────┤",
+        "│  IDENTITY : Vansh Kalawatia (@despair0x00)   │",
+        "│  CORE     : Python · FastAPI · PostgreSQL    │",
+        "│  MINDSET  : \"Surpass limits.\" (Vegeta / Guts)│",
+        "│  TARGET   : Summer 2027 Backend Internship   │",
+        "└──────────────────────────────────────────────┘"
+    ]
+
     rows = []
-    base_y = 80
-    line_h = 40
-    for i, (delay, txt) in enumerate(lines):
+    base_y = 70
+    line_h = 38
+    full_spec = terminal_header + [(f"{0.35 + i * 0.04:.2f}", l) for i, l in enumerate(lines_art)]
+    
+    for i, (delay, txt) in enumerate(full_spec):
         color = TEXT_MAIN
-        font_weight = "400"
-        if txt.startswith("$"):
+        if "IDENTITY" in txt or "AVATAR" in txt:
             color = "#ffffff"
-            font_weight = "600"
-        elif txt.startswith(">>"):
+        elif "CORE" in txt:
             color = TEXT_SILVER
-        elif txt.startswith("\""):
+        elif "MINDSET" in txt:
             color = "#a5d6ff"
-            font_weight = "500"
-        elif txt.endswith("█"):
-            color = "#f0f6fc"
-            
+        elif "TARGET" in txt:
+            color = "#7ee787"
+        elif "│" in txt or "┌" in txt or "└" in txt or "├" in txt:
+            color = BORDER if ("." in txt or "_" in txt or "(" in txt) else "#58a6ff"
+
         rows.append(
             f'<text class="f" style="animation-delay:{delay}s" xml:space="preserve" '
-            f'x="36" y="{base_y + i * line_h}" fill="{color}" font-weight="{font_weight}" '
-            f'font-size="22">{escape(txt)}</text>'
+            f'x="36" y="{base_y + i * line_h}" fill="{color}" font-weight="500" '
+            f'font-size="21">{escape(txt)}</text>'
         )
 
     terminal_body = f"""
 <defs>
-  <linearGradient id="term_bg" x1="0" y1="0" x2="0" y2="1">
+  <linearGradient id="avatar_bg" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0" stop-color="#161b22"/>
     <stop offset="1" stop-color="#090d13"/>
   </linearGradient>
 </defs>
-<rect width="{tw}" height="{th}" rx="18" fill="url(#term_bg)"/>
+<rect width="{tw}" height="{th}" rx="18" fill="url(#avatar_bg)"/>
 <rect x="1" y="1" width="{tw - 2}" height="{th - 2}" rx="17" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
 <line x1="0" y1="46" x2="{tw}" y2="46" stroke="{BORDER}" stroke-width="1.5"/>
 <circle cx="28" cy="23" r="6.5" fill="#484f58"/>
 <circle cx="48" cy="23" r="6.5" fill="#6e7681"/>
 <circle cx="68" cy="23" r="6.5" fill="#8b949e"/>
-<text x="{tw / 2}" y="28" fill="{TEXT_MUTED}" font-size="15" font-family="{MONO}" text-anchor="middle">despair0x00@noir: ~/backend $ ./specs.sh</text>
+<text x="{tw / 2}" y="28" fill="{TEXT_MUTED}" font-size="15" font-family="{MONO}" text-anchor="middle">despair0x00@noir: ~/avatar $ ./render_ascii.sh</text>
 <g font-family="{MONO}">
 {''.join(rows)}
 </g>
 """
     return terminal_body
 
-# ---- 1 · HERO CARD (Manga Noir Edition) ----------------------------------------
+# ---- 2 · HERO CARD (With ASCII Portrait) ---------------------------------------
 def hero():
     h = 420
-    terminal_content = generate_hero_terminal()
+    ascii_portrait_svg = generate_hero_ascii_portrait()
     s = 0.42
     body = f"""
 <defs>
@@ -217,14 +335,68 @@ def hero():
   <text class="nu" x="290" y="396" font-family="{MONO}" font-size="13" fill="{ACCENT}">&#8599;</text>
 </g>
 <g transform="translate(506 34) scale({s})" class="f" {d(0.3)}>
-  {terminal_content}
+  {ascii_portrait_svg}
 </g>
 """
     write("hero.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
                           "Vansh Kalawatia · despair0x00. Python Backend Engineer. Targeting Summer 2027 Internship."))
 
-# ---- 2 · HEATMAP (Monochrome Manga Noir) ---------------------------------------
-# Noir ink scale: deep charcoal to stark silver/white
+# ---- 3 · DEDICATED "WHO AM I" CARD (whoami.svg) --------------------------------
+def whoami():
+    h = 280
+    body = f"""
+<defs>
+  <pattern id="whoami_grid" width="20" height="20" patternUnits="userSpaceOnUse">
+    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#21262d" stroke-width="0.5" opacity="0.4"/>
+  </pattern>
+</defs>
+<rect width="{W}" height="{h}" rx="14" fill="{BG_MAIN}"/>
+<rect width="{W}" height="{h}" rx="14" fill="url(#whoami_grid)"/>
+<rect x="0.75" y="0.75" width="{W - 1.5}" height="{h - 1.5}" rx="13.25" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
+
+<!-- Top Metadata Pill -->
+<g class="f" {d(0.1)}>
+  <rect class="live" x="42" y="34" width="7" height="7" rx="2" fill="{ACCENT}"/>
+  <text x="58" y="41" font-family="{MONO}" font-size="11" letter-spacing="1.5" fill="{TEXT_MUTED}">WHO I AM // IDENTITY, ARCHITECTURE &amp; MINDSET</text>
+</g>
+
+<!-- Big Editorial Title -->
+<text class="r" {d(0.25)} x="40" y="86" font-family="{SERIF}" font-size="38" fill="{TEXT_MAIN}">The Engineer <tspan font-style="italic" fill="{TEXT_SILVER}">&amp; The Philosophy</tspan></text>
+
+<!-- Divider Line -->
+<line x1="42" y1="108" x2="{W - 42}" y2="108" stroke="{BORDER}" stroke-width="1"/>
+
+<!-- Left Column: The Engineer -->
+<g class="r" {d(0.4)}>
+  <text x="42" y="136" font-family="{MONO}" font-size="12" letter-spacing="1" fill="#58a6ff">// BACKGROUND &amp; FOCUS</text>
+  <text x="42" y="164" font-family="{SANS}" font-size="14.5" fill="{TEXT_MAIN}">3rd-year B.Tech CSE undergrad in India targeting a <tspan font-weight="600">Summer 2027</tspan></text>
+  <text x="42" y="188" font-family="{SANS}" font-size="14.5" fill="{TEXT_MAIN}">Python Backend Engineering Internship.</text>
+  <text x="42" y="222" font-family="{MONO}" font-size="12" fill="{TEXT_MUTED}">STACK : <tspan fill="{TEXT_SILVER}">Python 3.12 · FastAPI · PostgreSQL · Redis · Docker · Linux</tspan></text>
+  <text x="42" y="244" font-family="{MONO}" font-size="12" fill="{TEXT_MUTED}">ALIAS : <tspan fill="{TEXT_MAIN}">vanshkalawatia</tspan> &nbsp;·&nbsp; SIDE QUEST: <tspan fill="{TEXT_MAIN}">@despair0x00</tspan></text>
+</g>
+
+<!-- Center Vertical Separator -->
+<line x1="510" y1="120" x2="510" y2="256" stroke="{BORDER}" stroke-width="1" stroke-dasharray="3 3"/>
+
+<!-- Right Column: The Philosophy & Anime Taste -->
+<g class="r" {d(0.55)}>
+  <text x="540" y="136" font-family="{MONO}" font-size="12" letter-spacing="1" fill="#7ee787">// MINDSET &amp; INSPIRATION</text>
+  
+  <!-- Stoic Anime Quote Container -->
+  <rect x="540" y="152" width="298" height="66" rx="8" fill="{SURFACE}"/>
+  <rect x="540.75" y="152.75" width="296.5" height="64.5" rx="7.25" fill="none" stroke="{BORDER}" stroke-width="1"/>
+  
+  <text x="554" y="177" font-family="{SANS}" font-style="italic" font-size="13" fill="{TEXT_MAIN}">"Surpassing my limits... that's all I've ever</text>
+  <text x="554" y="196" font-family="{SANS}" font-style="italic" font-size="13" fill="{TEXT_MAIN}">known."</text>
+  <text x="618" y="196" font-family="{MONO}" font-size="11" fill="{TEXT_MUTED}">— Vegeta / Guts (Berserk)</text>
+  
+  <text x="540" y="244" font-family="{MONO}" font-size="11.5" fill="{TEXT_MUTED}">VIBE  : <tspan fill="{TEXT_SILVER}">Guts · Johan Liebert · Aizen · Methodical Grit</tspan></text>
+</g>
+"""
+    write("whoami.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
+                            "Who Am I: Identity, Engineering, Background and Philosophy of Vansh Kalawatia."))
+
+# ---- 4 · HEATMAP (Monochrome Manga Noir) ---------------------------------------
 NOIR_LEVELS = ["#161b22", "#2d333b", "#444c56", "#768390", "#adbac7", "#f0f6fc"]
 
 def level_for(c):
@@ -276,7 +448,7 @@ def heatmap(data):
     write("heatmap.svg", svg(W, h, body, ["serif", "serif-i", "mono"],
                              f'Contribution graph in noir: {data["total_contributions"]:,} contributions in the last year'))
 
-# ---- 3 · REPOSITORY CARDS (Vansh's Real Repositories) --------------------------
+# ---- 5 · REPOSITORY CARDS ------------------------------------------------------
 REPO_W, REPO_H = 880 / 3 - 8, 176
 
 REAL_REPOS = [
@@ -286,7 +458,7 @@ REAL_REPOS = [
 ]
 
 def repo_card(i, name, desc, lang, tag_color, meta_tag):
-    delay = 2.0 + i * 0.12
+    delay = 1.6 + i * 0.12
     meta = f"{lang}  ·  {meta_tag}"
     body = f"""
 <rect width="{REPO_W}" height="{REPO_H}" rx="14" fill="{SURFACE}"/>
@@ -302,11 +474,11 @@ def repo_card(i, name, desc, lang, tag_color, meta_tag):
     write(f"repo-{name}.svg", svg(REPO_W, REPO_H, body, ["sans", "sans-b", "mono"], f"{name}: {desc}",
                                   left=4 * i, right=8 - 4 * i))
 
-# ---- 4 · SECTION TITLES --------------------------------------------------------
+# ---- 6 · SECTION TITLES --------------------------------------------------------
 def section_title(text, italic, theme):
     fg = TEXT_MAIN if theme == "dark" else "#111111"
     body = (
-        f'<text class="r" {d(1.8)} x="2" y="46" font-family="{SERIF}" font-size="34" fill="{fg}">{escape(text)} '
+        f'<text class="r" {d(1.4)} x="2" y="46" font-family="{SERIF}" font-size="34" fill="{fg}">{escape(text)} '
         f'<tspan font-style="italic">{escape(italic)}</tspan></text>'
     )
     write(f"title-coding-{theme}.svg", svg(W, 64, body, ["serif", "serif-i"], f"{text} {italic}", bottom=0))
@@ -314,9 +486,10 @@ def section_title(text, italic, theme):
 if __name__ == "__main__":
     data = json.load(open(DATA, "r", encoding="utf-8"))
     hero()
+    whoami()
     heatmap(data)
     for i, (name, desc, lang, color, meta_tag) in enumerate(REAL_REPOS):
         repo_card(i, name, desc, lang, color, meta_tag)
     section_title("Featured", "repositories", "dark")
     section_title("Featured", "repositories", "light")
-    print("Done rendering Monochrome Manga Noir profile cards!")
+    print("Done rendering all cards!")

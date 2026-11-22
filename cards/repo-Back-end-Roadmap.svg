@@ -13,7 +13,7 @@
 </style><g transform="translate(4.000 0)">
 <rect width="285.3333333333333" height="176" rx="14" fill="#161b22"/>
 <rect x="0.75" y="0.75" width="283.8333333333333" height="174.5" rx="13.25" fill="none" stroke="#30363d" stroke-width="1.5"/>
-<g class="r" style="animation-delay:2.12s">
+<g class="r" style="animation-delay:1.72s">
   <rect x="24" y="30" width="8" height="8" rx="2" fill="#c9d1d9"/>
   <text x="40" y="39" font-family="Geist, system-ui, -apple-system, sans-serif" font-weight="600" font-size="16" fill="#f0f6fc">Back-end-Roadmap</text>
   <text x="24" y="72" font-family="Geist, system-ui, -apple-system, sans-serif" font-size="13.5" fill="#c9d1d9">Backend developer roadmap 2026:</text><text x="24" y="93" font-family="Geist, system-ui, -apple-system, sans-serif" font-size="13.5" fill="#c9d1d9">APIs, PostgreSQL, Redis, Docker</text><text x="24" y="114" font-family="Geist, system-ui, -apple-system, sans-serif" font-size="13.5" fill="#c9d1d9">&amp; system design.</text>
