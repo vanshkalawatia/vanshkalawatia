@@ -3,7 +3,7 @@
 Render Vansh Kalawatia's profile README cards as animated SVGs into cards/.
 Theme: Monochrome Manga Noir (Johan Liebert / Monster / Berserk psychological aesthetic).
 Cards:
-- hero.svg (With animated ASCII profile portrait on the right)
+- hero.svg (With animated ASCII portrait of the Sunglasses Explosion Cat avatar)
 - whoami.svg (Dedicated Who Am I: Identity, Engineering, Anime Mindset)
 - heatmap.svg (Contribution graph in monochrome ink)
 - title-coding-dark.svg / title-coding-light.svg (Featured Repositories title)
@@ -18,12 +18,14 @@ import json
 import os
 import re
 from html import escape
+from PIL import Image, ImageEnhance
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, "..")
 DATA = os.path.join(ROOT, "data", "contributions.json")
 OUT = os.path.join(ROOT, "cards")
 FONTS = os.path.join(ROOT, "fonts")
+AVATAR_PATH = os.path.join(ROOT, "assets", "avatar.jpg")
 
 # Monochrome Manga Noir Palette
 BG_MAIN = "#0d1117"        # Obsidian Dark
@@ -114,193 +116,83 @@ def text_lines(x, y, lines, lh, attrs):
         f'<text x="{x}" y="{y + i * lh}" {attrs}>{escape(l)}</text>' for i, l in enumerate(lines)
     )
 
-# ---- 1 · ASCII PORTRAIT GENERATOR (For Hero Card) ----
-def generate_hero_ascii_portrait():
+# ---- 1 · GENERATE ASCII FROM USER'S AVATAR IMAGE ----
+def generate_hero_cat_ascii():
     tw, th = 820, 840
-    # Detailed manga noir anime portrait in shaded ASCII
-    ascii_lines = [
-        "                 .:::::.                ",
-        "              .:::::::::::.             ",
-        "            .::::::::::::::::.          ",
-        "           ::::::::::::::::::::         ",
-        "          ::::::::::::::::::::::        ",
-        "         :::\"\"'  '\"\"\"\"\"\"'  '\"\":::       ",
-        "        ::'  .::.          .::.  '::    ",
-        "       ::   ::::::        ::::::   ::   ",
-        "      ::   '::::::        ::::::'   ::  ",
-        "     :::    '::::'        '::::'    ::: ",
-        "     :::                            ::: ",
-        "     :::         ..      ..         ::: ",
-        "     '::.       '::.    .::'       .::' ",
-        "      '::.        '::::::'        .::'  ",
-        "        '::.                    .::'    ",
-        "          '::.   .--------.   .::'      ",
-        "            '::.  '::::::'  .::'        ",
-        "             :::'          ':::         ",
-        "          .::::::::::::::::::::::.      ",
-        "       .::::::::::::::::::::::::::::.   ",
-        "     .::::::::::::::::::::::::::::::::. ",
-        "    ::::::::::::::::::::::::::::::::::::",
-        "   ::::::::::::::::::::::::::::::::::::::",
-        "  ::::::::::::::::::::::::::::::::::::::::",
-        "  ::::::::::::::::::::::::::::::::::::::::",
-        "  ::'  ::::::::::::::::::::::::::::::  '::",
-        "       '::::::::::::::::::::::::::::'   ",
-        "        '::::::::::::::::::::::::::'    ",
-        "         '::::::::::::::::::::::::'     ",
-        "          '::::::::::::::::::::::'      "
-    ]
+    w_chars, h_chars = 44, 25
     
-    # Atmospheric manga noir ASCII rendering
-    # We create a richer anime-aesthetic portrait with hair layers and intense stare
-    rich_ascii = [
-        "                     .---.                      ",
-        "                   ./:::::\\.                    ",
-        "                 ./:::::::::\\.                  ",
-        "                /:::::::::::::\\                 ",
-        "               /:::::__:::__:::\\                ",
-        "              |:::::/  \\ /  \\:::|               ",
-        "              |::::| () | () |::|               ",
-        "              |:::::\\__/ \\__/:::|               ",
-        "              |::::::   _   ::::|   [STATION: NOIR]",
-        "              |::::::  / \\  ::::|   [ID: despair0x00]",
-        "               \\:::::  \\_/  :::/    [ROLE: BACKEND DEV]",
-        "                \\::::.     .::/                 ",
-        "                 '\\:::=====::/'                 ",
-        "                 .---|     |---.                ",
-        "               /     \\     /     \\              ",
-        "              |   .---'   '---.   |             ",
-        "              |  /   G U T S   \\  |             ",
-        "              | /   M I N D     \\ |             ",
-        "              |/    S E T        \\|             ",
-        "              /                   \\             ",
-        "             |   .-------------.   |            ",
-        "             |  /  PYTHON 3.12  \\  |            ",
-        "             | /    FASTAPI      \\ |            ",
-        "             |/     POSTGRES      \\|            ",
-        "             '---------------------'            "
-    ]
+    ascii_rows = []
+    if os.path.exists(AVATAR_PATH):
+        try:
+            im = Image.open(AVATAR_PATH).convert("L")
+            im = ImageEnhance.Contrast(im).enhance(2.0)
+            im = im.resize((w_chars, h_chars), Image.Resampling.LANCZOS)
+            chars = " .:-=+*#%@"
+            pix = list(im.get_flattened_data())
+            for r in range(h_chars):
+                row = "".join(chars[int(pix[r * w_chars + c] / 256 * len(chars))] for c in range(w_chars))
+                ascii_rows.append(row)
+        except Exception as e:
+            print("Avatar error:", e)
 
-    # Let's craft an authentic high-resolution terminal ascii portrait of Vansh (despair0x00):
-    ascii_portrait = [
-        "                        .---.",
-        "                      /       \\",
-        "                     |  O   O  |       // despair0x00",
-        "                 ---. \\   ^   / .---   // Python Backend",
-        "                /    '. '---' .'    \\  // 3rd Year CSE",
-        "               /   /\\  '-----'  /\\   \\",
-        "              /   /  \\         /  \\   \\",
-        "             /   /    |       |    \\   \\",
-        "            /___/     |_______|     \\___\\",
-        "             | |      |       |      | |",
-        "             | |      |   *   |      | |",
-        "             | |      |_______|      | |",
-        "            /   \\     |       |     /   \\",
-        "           |     |    |_______|    |     |",
-        "           |_____|                 |_____|"
-    ]
+    rendered_lines = []
+    base_y = 74
+    line_h = 24.5
 
-    # High fidelity stylized character matrix
-    matrix_art = [
-        "                _.._                   ",
-        "              .' .-'`                  ",
-        "             /  /                      ",
-        "            |  |      .---.            ",
-        "            |  |     /  .  \\   [AURA]  ",
-        "             \\  \\   |  /|\\  |  GUTS    ",
-        "              '._'--'  \\|/  /  JOHAN   ",
-        "                 `---.     <   VEGETA  ",
-        "                     |  _   \\          ",
-        "                     | (_)  |          ",
-        "                     \\      /          ",
-        "                      `'--'`           ",
-        "                 .---.     .---.       ",
-        "                /     \\___/     \\      ",
-        "               |  ===  ___  ===  |     ",
-        "               |      [___]      |     ",
-        "               |   PYTHON  CORE  |     ",
-        "               |   FASTAPI ASYNC |     ",
-        "                \\_______________/      "
-    ]
-
-    # We will format this into a gorgeous manga console panel
-    terminal_header = [
-        ("0.20", "┌──────────────────────────────────────────────┐"),
-        ("0.25", "│  AVATAR SPECIFICATION // DESPAIR0X00         │"),
-        ("0.30", "├──────────────────────────────────────────────┤"),
-    ]
-
-    # Clean, crisp pixel-aligned ASCII silhouette
-    lines_art = [
-        "│           .-----------------------.          │",
-        "│          /  .-------------------.  \\         │",
-        "│         |  /                     \\  |        │",
-        "│         | |   _..._       _..._   | |        │",
-        "│         | |  / _   \\     /   _ \\  | |        │",
-        "│         | | | (_)   |   |   (_) | | |        │",
-        "│         | |  \\_____/  _  \\_____/  | |        │",
-        "│         | |          (_)          | |        │",
-        "│         | |     .-----------.     | |        │",
-        "│         | |      \\         /      | |        │",
-        "│         |  \\      '-------'      /  |        │",
-        "│          \\  '-------------------'  /         │",
-        "│           '-----------------------'          │",
-        "├──────────────────────────────────────────────┤",
-        "│  IDENTITY : Vansh Kalawatia (@despair0x00)   │",
-        "│  CORE     : Python · FastAPI · PostgreSQL    │",
-        "│  MINDSET  : \"Surpass limits.\" (Vegeta / Guts)│",
-        "│  TARGET   : Summer 2027 Backend Internship   │",
-        "└──────────────────────────────────────────────┘"
-    ]
-
-    rows = []
-    base_y = 70
-    line_h = 38
-    full_spec = terminal_header + [(f"{0.35 + i * 0.04:.2f}", l) for i, l in enumerate(lines_art)]
-    
-    for i, (delay, txt) in enumerate(full_spec):
-        color = TEXT_MAIN
-        if "IDENTITY" in txt or "AVATAR" in txt:
+    for i, line_str in enumerate(ascii_rows):
+        delay = 0.25 + i * 0.02
+        # Use subtle color gradient across the explosion and cat:
+        # Top lines = explosion (#ff9b5e / #e6edf3)
+        # Mid-lower lines = cat with dark shades (#f0f6fc)
+        if i < 7:
+            color = "#f0883e" if i % 2 == 0 else "#e6edf3"
+        elif 13 <= i <= 17:
             color = "#ffffff"
-        elif "CORE" in txt:
-            color = TEXT_SILVER
-        elif "MINDSET" in txt:
-            color = "#a5d6ff"
-        elif "TARGET" in txt:
-            color = "#7ee787"
-        elif "│" in txt or "┌" in txt or "└" in txt or "├" in txt:
-            color = BORDER if ("." in txt or "_" in txt or "(" in txt) else "#58a6ff"
+        else:
+            color = "#c9d1d9"
+            
+        rendered_lines.append(
+            f'<text class="f" style="animation-delay:{delay:.2f}s" xml:space="preserve" '
+            f'x="38" y="{base_y + i * line_h}" fill="{color}" font-weight="600" '
+            f'font-size="18.5" letter-spacing="1.5">{escape(line_str)}</text>'
+        )
 
-        rows.append(
+    # Bottom footer badges inside the avatar terminal
+    footer_lines = [
+        (0.85, 735, "[STATUS]   Cool devs don't look at backend explosions.", "#7ee787"),
+        (0.95, 765, "[IDENTITY] Vansh Kalawatia (@despair0x00) · Python Backend", "#58a6ff"),
+        (1.05, 795, "[TARGET]   Summer 2027 Backend Internship", "#f0f6fc"),
+    ]
+    for delay, fy, txt, color in footer_lines:
+        rendered_lines.append(
             f'<text class="f" style="animation-delay:{delay}s" xml:space="preserve" '
-            f'x="36" y="{base_y + i * line_h}" fill="{color}" font-weight="500" '
-            f'font-size="21">{escape(txt)}</text>'
+            f'x="38" y="{fy}" fill="{color}" font-weight="600" font-size="15.5">{escape(txt)}</text>'
         )
 
     terminal_body = f"""
 <defs>
-  <linearGradient id="avatar_bg" x1="0" y1="0" x2="0" y2="1">
+  <linearGradient id="avatar_term_bg" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0" stop-color="#161b22"/>
     <stop offset="1" stop-color="#090d13"/>
   </linearGradient>
 </defs>
-<rect width="{tw}" height="{th}" rx="18" fill="url(#avatar_bg)"/>
+<rect width="{tw}" height="{th}" rx="18" fill="url(#avatar_term_bg)"/>
 <rect x="1" y="1" width="{tw - 2}" height="{th - 2}" rx="17" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
 <line x1="0" y1="46" x2="{tw}" y2="46" stroke="{BORDER}" stroke-width="1.5"/>
-<circle cx="28" cy="23" r="6.5" fill="#484f58"/>
-<circle cx="48" cy="23" r="6.5" fill="#6e7681"/>
-<circle cx="68" cy="23" r="6.5" fill="#8b949e"/>
-<text x="{tw / 2}" y="28" fill="{TEXT_MUTED}" font-size="15" font-family="{MONO}" text-anchor="middle">despair0x00@noir: ~/avatar $ ./render_ascii.sh</text>
+<circle cx="28" cy="23" r="6.5" fill="#ff5f56"/>
+<circle cx="48" cy="23" r="6.5" fill="#ffbd2e"/>
+<circle cx="68" cy="23" r="6.5" fill="#27c93f"/>
+<text x="{tw / 2}" y="28" fill="{TEXT_MUTED}" font-size="15" font-family="{MONO}" text-anchor="middle">despair0x00@noir: ~/avatar $ ./avatar.sh</text>
 <g font-family="{MONO}">
-{''.join(rows)}
+{''.join(rendered_lines)}
 </g>
 """
     return terminal_body
 
-# ---- 2 · HERO CARD (With ASCII Portrait) ---------------------------------------
+# ---- 2 · HERO CARD -------------------------------------------------------------
 def hero():
     h = 420
-    ascii_portrait_svg = generate_hero_ascii_portrait()
+    ascii_portrait_svg = generate_hero_cat_ascii()
     s = 0.42
     body = f"""
 <defs>
@@ -492,4 +384,4 @@ if __name__ == "__main__":
         repo_card(i, name, desc, lang, color, meta_tag)
     section_title("Featured", "repositories", "dark")
     section_title("Featured", "repositories", "light")
-    print("Done rendering all cards!")
+    print("Done rendering all profile cards with cat ASCII avatar!")
