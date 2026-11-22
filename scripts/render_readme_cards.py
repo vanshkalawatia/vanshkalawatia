@@ -4,7 +4,7 @@ Render Vansh Kalawatia's profile README cards as animated SVGs into cards/.
 Theme: Monochrome Manga Noir.
 Cards:
 - hero.svg (Clean, bold, zero filler description below name)
-- about.svg (Single authentic developer card: Who I Am & What I Do)
+- about.svg (Spacious bullet-point developer card: easy to scan, generous line spacing)
 - heatmap.svg (Contribution graph in monochrome ink)
 - title-coding-dark.svg / title-coding-light.svg (Featured Repositories title)
 - repo-Phase-1-First-Real-Tools.svg
@@ -140,7 +140,7 @@ def get_cat_ascii_lines(target_w=36, target_h=25):
 
 # ---- 2 · HERO CARD (Bold, Iconic, No Useless Filler Text) ----------------------
 def hero():
-    h = 380  # Clean, proportional height without useless description
+    h = 380
     ascii_rows = get_cat_ascii_lines(36, 25)
     
     ascii_svg_lines = []
@@ -199,9 +199,28 @@ def hero():
     write("hero.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
                           "Vansh Kalawatia · despair0x00. Backend Developer · 3rd Year CSE."))
 
-# ---- 3 · SINGLE AUTHENTIC CARD: "WHO I AM & WHAT I DO" (about.svg) ------------
+# ---- 3 · SPACIOUS BULLET-POINT "ABOUT ME" CARD (about.svg) --------------------
 def about_me():
-    h = 290
+    h = 320  # Generous height, ample whitespace
+    points = [
+        ("0.30", 146, "Background", "3rd-year B.Tech CSE student (India) · Targeting Summer 2027 Backend Internship"),
+        ("0.40", 182, "Engineering", "Building scalable REST APIs, async worker pipelines & CLI tools in Python & FastAPI"),
+        ("0.50", 218, "Tech Stack", "Python 3.12 · FastAPI · PostgreSQL · Redis · Docker · Linux · Git"),
+        ("0.60", 254, "Algorithms", "Daily problem solving with Data Structures & Algorithms on LeetCode (Python)"),
+        ("0.70", 290, "Handles", "GitHub: @vanshkalawatia · Secondary alias: @despair0x00"),
+    ]
+    
+    point_svgs = []
+    for delay, y, label, desc in points:
+        point_svgs.append(
+            f'<g class="r" {d(float(delay))}>'
+            f'<text x="48" y="{y}" font-family="{MONO}" font-size="13" fill="#58a6ff">&#9657;</text>'
+            f'<text x="68" y="{y}" font-family="{MONO}" font-size="12" letter-spacing="1" fill="{TEXT_MUTED}">{escape(label.upper())}</text>'
+            f'<text x="180" y="{y}" font-family="{MONO}" font-size="12" fill="{BORDER}">:</text>'
+            f'<text x="198" y="{y}" font-family="{SANS}" font-size="14.5" fill="{TEXT_MAIN}">{escape(desc)}</text>'
+            f'</g>'
+        )
+
     body = f"""
 <defs>
   <pattern id="about_grid" width="24" height="24" patternUnits="userSpaceOnUse">
@@ -214,30 +233,18 @@ def about_me():
 
 <!-- Top Metadata Pill -->
 <g class="f" {d(0.1)}>
-  <rect class="live" x="48" y="34" width="7" height="7" rx="2" fill="{ACCENT}"/>
-  <text x="64" y="41" font-family="{MONO}" font-size="11" letter-spacing="1.5" fill="{TEXT_MUTED}">ABOUT ME // WHO I AM &amp; WHAT I DO</text>
+  <rect class="live" x="48" y="36" width="7" height="7" rx="2" fill="{ACCENT}"/>
+  <text x="64" y="43" font-family="{MONO}" font-size="11" letter-spacing="1.5" fill="{TEXT_MUTED}">ABOUT ME // WHO I AM &amp; WHAT I DO</text>
 </g>
 
 <!-- Big Editorial Title -->
-<text class="r" {d(0.2)} x="46" y="84" font-family="{SERIF}" font-size="36" fill="{TEXT_MAIN}">Who I Am <tspan font-style="italic" fill="{TEXT_SILVER}">&amp; What I Do</tspan></text>
+<text class="r" {d(0.2)} x="46" y="86" font-family="{SERIF}" font-size="36" fill="{TEXT_MAIN}">Who I Am <tspan font-style="italic" fill="{TEXT_SILVER}">&amp; What I Do</tspan></text>
 
 <!-- Divider Line -->
-<line x1="48" y1="104" x2="{W - 48}" y2="104" stroke="{BORDER}" stroke-width="1"/>
+<line x1="48" y1="108" x2="{W - 48}" y2="108" stroke="{BORDER}" stroke-width="1"/>
 
-<!-- Real Developer Content -->
-<!-- 01 · Who I Am -->
-<g class="r" {d(0.35)}>
-  <text x="48" y="136" font-family="{MONO}" font-size="11" letter-spacing="1.5" fill="#58a6ff">// WHO I AM</text>
-  <text x="48" y="162" font-family="{SANS}" font-size="14.5" fill="{TEXT_MAIN}">3rd-year Computer Science undergrad in India passionate about backend engineering, clean architecture,</text>
-  <text x="48" y="184" font-family="{SANS}" font-size="14.5" fill="{TEXT_MAIN}">and writing robust software from scratch. Targeting a <tspan font-weight="600" fill="#ffffff">Summer 2027 Backend Internship</tspan>.</text>
-</g>
-
-<!-- 02 · What I Do -->
-<g class="r" {d(0.5)}>
-  <text x="48" y="222" font-family="{MONO}" font-size="11" letter-spacing="1.5" fill="#7ee787">// WHAT I DO &amp; TECH STACK</text>
-  <text x="48" y="248" font-family="{SANS}" font-size="14" fill="{TEXT_SILVER}">Building asynchronous REST APIs &amp; CLI tools with <tspan fill="{TEXT_MAIN}" font-weight="600">Python 3.12</tspan> and <tspan fill="{TEXT_MAIN}" font-weight="600">FastAPI</tspan>.</text>
-  <text x="48" y="268" font-family="{MONO}" font-size="12" fill="{TEXT_MUTED}">STORAGE &amp; INFRA : <tspan fill="{TEXT_SILVER}">PostgreSQL · Redis · Docker · Linux · Daily LeetCode (DSA in Python)</tspan></text>
-</g>
+<!-- Spacious Bullet Points (36px vertical stride, clear column alignment) -->
+{''.join(point_svgs)}
 """
     write("about.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
                            "Who I Am & What I Do. Vansh Kalawatia - Backend Developer."))
