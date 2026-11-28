@@ -1,0 +1,32 @@
+{
+  "level": 0,
+  "title": "Foundation",
+  "status": "In Progress",
+  "unlocks": "You can start building. Not employable yet.",
+  "items": [
+    {
+      "text": "Write Python functions, classes, and OOP without looking things up",
+      "done": false
+    },
+    {
+      "text": "Handle exceptions, read and write files, and work with JSON",
+      "done": false
+    },
+    {
+      "text": "Use virtual environments and pip",
+      "done": false
+    },
+    {
+      "text": "Use Git daily: commit, branch, merge, resolve a conflict, push to GitHub",
+      "done": false
+    },
+    {
+      "text": "Be comfortable in the terminal (navigate, run scripts, read logs)",
+      "done": false
+    },
+    {
+      "text": "Explain how HTTP works: methods, status codes, headers, request and response",
+      "done": false
+    }
+  ]
+}

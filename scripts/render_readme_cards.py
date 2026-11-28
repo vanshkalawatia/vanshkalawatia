@@ -23,6 +23,7 @@ from PIL import Image, ImageEnhance
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.join(HERE, "..")
 DATA = os.path.join(ROOT, "data", "contributions.json")
+ROADMAP_FILE = os.path.join(ROOT, "data", "roadmap.json")
 OUT = os.path.join(ROOT, "cards")
 FONTS = os.path.join(ROOT, "fonts")
 AVATAR_CLEAN = os.path.join(ROOT, "assets", "avatar_clean.png")
@@ -282,7 +283,109 @@ def about_me():
     write("about.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
                            "Who I Am & What I Do. Vansh Kalawatia - Backend Developer."))
 
-# ---- 4 · HEATMAP (Monochrome Manga Noir) ---------------------------------------
+# ---- 4 · ROADMAP QUEST CARD (roadmap.svg) -------------------------------------
+def roadmap():
+    if os.path.exists(ROADMAP_FILE):
+        rm_data = json.load(open(ROADMAP_FILE, "r", encoding="utf-8"))
+    else:
+        rm_data = {
+            "level": 0,
+            "title": "Foundation",
+            "status": "In Progress",
+            "unlocks": "You can start building. Not employable yet.",
+            "items": [
+                {"text": "Write Python functions, classes, and OOP without looking things up", "done": False},
+                {"text": "Handle exceptions, read and write files, and work with JSON", "done": False},
+                {"text": "Use virtual environments and pip", "done": False},
+                {"text": "Use Git daily: commit, branch, merge, resolve a conflict, push to GitHub", "done": False},
+                {"text": "Be comfortable in the terminal (navigate, run scripts, read logs)", "done": False},
+                {"text": "Explain how HTTP works: methods, status codes, headers, request and response", "done": False}
+            ]
+        }
+    
+    h = 380
+    level = rm_data.get("level", 0)
+    title = rm_data.get("title", "Foundation")
+    unlocks = rm_data.get("unlocks", "You can start building. Not employable yet.")
+    items = rm_data.get("items", [])
+    
+    total_items = len(items)
+    done_items = sum(1 for it in items if it.get("done", False))
+    pct = int((done_items / total_items) * 100) if total_items > 0 else 0
+    
+    bar_w = 160
+    bar_fill_w = max(4, int(bar_w * (pct / 100.0))) if done_items > 0 else 0
+    
+    item_svgs = []
+    start_y = 138
+    stride = 27
+    for i, it in enumerate(items):
+        delay = 0.30 + i * 0.07
+        y = start_y + i * stride
+        text = it.get("text", "")
+        is_done = it.get("done", False)
+        
+        if is_done:
+            box = (
+                f'<rect x="48" y="{y - 11}" width="14" height="14" rx="3.5" fill="#238636" stroke="#2ea043" stroke-width="1.2"/>'
+                f'<path d="M 51 {y - 4} L 54 {y - 1} L 59 {y - 7}" fill="none" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>'
+            )
+            txt_color = TEXT_MUTED
+            txt_decor = ' text-decoration="line-through"'
+        else:
+            box = f'<rect x="48" y="{y - 11}" width="14" height="14" rx="3.5" fill="{SURFACE}" stroke="{BORDER}" stroke-width="1.2"/>'
+            txt_color = TEXT_MAIN
+            txt_decor = ""
+            
+        item_svgs.append(
+            f'<g class="r" {d(delay)}>'
+            f'{box}'
+            f'<text x="72" y="{y}" font-family="{SANS}" font-size="13.5" fill="{txt_color}"{txt_decor}>{escape(text)}</text>'
+            f'</g>'
+        )
+        
+    body = f"""
+<defs>
+  <pattern id="roadmap_dots" x="0" y="0" width="16" height="16" patternUnits="userSpaceOnUse">
+    <circle cx="2" cy="2" r="1" fill="#21262d" opacity="0.6"/>
+  </pattern>
+</defs>
+<rect width="{W}" height="{h}" rx="14" fill="{BG_MAIN}"/>
+<rect width="{W}" height="{h}" rx="14" fill="url(#roadmap_dots)"/>
+<rect x="0.75" y="0.75" width="{W - 1.5}" height="{h - 1.5}" rx="13.25" fill="none" stroke="{BORDER}" stroke-width="1.5"/>
+
+<!-- Top Metadata Pill -->
+<g class="f" {d(0.1)}>
+  <rect class="live" x="48" y="34" width="7" height="7" rx="2" fill="#58a6ff"/>
+  <text x="64" y="41" font-family="{MONO}" font-size="11" letter-spacing="1.5" fill="{TEXT_MUTED}">BACKEND ROADMAP // QUEST LOG</text>
+  <text x="{W - 48}" y="41" text-anchor="end" font-family="{MONO}" font-size="11" letter-spacing="1" fill="{TEXT_MUTED}">{done_items}/{total_items} COMPLETED · {pct}%</text>
+</g>
+
+<!-- Big Editorial Title & Progress Bar -->
+<g class="r" {d(0.2)}>
+  <text x="46" y="86" font-family="{SERIF}" font-size="34" fill="{TEXT_MAIN}">Level {level}: <tspan font-style="italic" fill="{TEXT_SILVER}">{escape(title)}</tspan></text>
+  <rect x="{W - 48 - bar_w}" y="73" width="{bar_w}" height="6" rx="3" fill="#21262d"/>
+  {'<rect x="' + str(W - 48 - bar_w) + '" y="73" width="' + str(bar_fill_w) + '" height="6" rx="3" fill="#3fb950"/>' if bar_fill_w > 0 else ''}
+</g>
+
+<!-- Divider Line -->
+<line x1="48" y1="108" x2="{W - 48}" y2="108" stroke="{BORDER}" stroke-width="1"/>
+
+<!-- Checklist Items -->
+{''.join(item_svgs)}
+
+<!-- Unlocks Callout Container -->
+<g class="r" {d(0.75)}>
+  <rect x="48" y="310" width="{W - 96}" height="42" rx="8" fill="{SURFACE}" stroke="{BORDER}" stroke-width="1"/>
+  <text x="64" y="336" font-family="{MONO}" font-size="11" letter-spacing="1.5" fill="#f0883e">&#9889; UNLOCKS:</text>
+  <text x="160" y="336" font-family="{SANS}" font-size="13" fill="{TEXT_MAIN}">{escape(unlocks)}</text>
+  <text x="{W - 64}" y="336" text-anchor="end" font-family="{MONO}" font-size="11" fill="{TEXT_MUTED}">Back-end-Roadmap &#8599;</text>
+</g>
+"""
+    write("roadmap.svg", svg(W, h, body, ["serif", "serif-i", "sans", "mono"],
+                             f"Backend Roadmap - Level {level}: {title}"))
+
+# ---- 5 · HEATMAP (Monochrome Manga Noir) ---------------------------------------
 NOIR_LEVELS = ["#161b22", "#2d333b", "#444c56", "#768390", "#adbac7", "#f0f6fc"]
 
 def level_for(c):
@@ -373,6 +476,7 @@ if __name__ == "__main__":
     data = json.load(open(DATA, "r", encoding="utf-8"))
     hero()
     about_me()
+    roadmap()
     heatmap(data)
     for i, (name, desc, lang, color, meta_tag) in enumerate(REAL_REPOS):
         repo_card(i, name, desc, lang, color, meta_tag)
